@@ -1,0 +1,55 @@
+# Python cache and build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.env/
+.env.*
+.venv/
+
+# Airflow-specific
+airflow.cfg
+unittests.cfg
+logs/
+dags/__pycache__/
+plugins/__pycache__/
+*.log
+
+# SQLite DB (default Airflow metadata store)
+airflow.db
+airflow.sqlite
+
+# Local data files for ETL
+data/
+tmp/
+*.csv
+*.tsv
+*.parquet
+*.json
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE configs
+.vscode/
+.idea/
+
+# Docker & Compose
+*.pid
+*.sock
+docker-compose.override.yml
+
+# Secrets & credentials
+*.key
+*.pem
+*.crt
+*.env
+secrets/
