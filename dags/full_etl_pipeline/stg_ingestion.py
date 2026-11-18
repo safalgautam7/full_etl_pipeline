@@ -21,7 +21,7 @@ FILE_PATTERN = re.compile(
     r"^(item_master|store_master|pos_sales|inventory_snapshot)_(\d{8})\.csv$" 
 ) #valid dates --> {name}_{name}_{YYYYMMDD}.csv
 # Identifiers are read from external config, but must not allow arbitrary SQL.
-SQL_OBJECT = re.compile(r"^[A-Z][A-Z0-9_]*(\.[A-Z][A-Z0-9_]*){2}$") 
+SQL_OBJECT = re.compile(r"^[A-Z][A-Z0-9_]*(\.[A-Z][A-Z0-9_]*){2}$") # to allow execution of 
 
 
 def settings():
