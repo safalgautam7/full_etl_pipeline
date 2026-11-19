@@ -1,0 +1,35 @@
+-- Collapse unchanged daily observations into effective-dated history.
+-- A change in historical ITEM_SK or LOCN_SK ALSO creates a new version.
+-- Half-open validity: [EFFECTIVE_FROM, EFFECTIVE_TO).
+CREATE OR REPLACE TEMPORARY TABLE RETAIL_DWH.TMP.WORK_FCT_INVENTORY AS
+WITH ordered_observations AS (
+    SELECT o.*,
+           ROW_NUMBER() OVER (
+               PARTITION BY o.STORE_ID, o.ITEM_ID
+               ORDER BY o.SNAPSHOT_DATE, o.SOURCE_ROW_ID
+           ) AS OBSERVATION_NUMBER,
+           LAG(o.POSITION_STATE_HASH) OVER (
+               PARTITION BY o.STORE_ID, o.ITEM_ID
+               ORDER BY o.SNAPSHOT_DATE, o.SOURCE_ROW_ID
+           ) AS PREVIOUS_STATE_HASH
+    FROM RETAIL_DWH.TMP.WORK_INV_OBSERVATIONS o
+), version_starts AS (
+    SELECT *
+    FROM ordered_observations
+    WHERE OBSERVATION_NUMBER = 1
+       OR POSITION_STATE_HASH <> PREVIOUS_STATE_HASH
+)
+SELECT
+    STORE_ID, ITEM_ID, ITEM_SK, LOCN_SK,
+    QUANTITY_ON_HAND, UNIT_COST, INVENTORY_VALUE,
+    SNAPSHOT_DATE AS EFFECTIVE_FROM,
+    LEAD(SNAPSHOT_DATE) OVER (
+        PARTITION BY STORE_ID, ITEM_ID
+        ORDER BY SNAPSHOT_DATE, SOURCE_ROW_ID
+    ) AS EFFECTIVE_TO,
+    LEAD(SNAPSHOT_DATE) OVER (
+        PARTITION BY STORE_ID, ITEM_ID
+        ORDER BY SNAPSHOT_DATE, SOURCE_ROW_ID
+    ) IS NULL AS IS_CURRENT,
+    SOURCE_ROW_ID
+FROM version_starts

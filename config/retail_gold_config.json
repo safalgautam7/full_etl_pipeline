@@ -1,0 +1,14 @@
+{
+  "snowflake_conn_id": "retail_snowflake",
+  "gold_sql_dir": "/opt/airflow/include/sql/gold",
+  "reconcile_sql_dir": "/opt/airflow/include/sql/reconcile",
+  "sales_work_table": "RETAIL_DWH.TMP.WORK_FCT_SALES",
+  "inventory_observations_table": "RETAIL_DWH.TMP.WORK_INV_OBSERVATIONS",
+  "inventory_work_table": "RETAIL_DWH.TMP.WORK_FCT_INVENTORY",
+  "dimension_tables": [
+    "RETAIL_DWH.TGT.DIM_SUBCLASS",
+    "RETAIL_DWH.TGT.DIM_DISTRICT",
+    "RETAIL_DWH.TGT.DIM_ITEM",
+    "RETAIL_DWH.TGT.DIM_LOCN"
+  ]
+}
