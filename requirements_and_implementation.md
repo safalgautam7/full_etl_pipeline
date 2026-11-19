@@ -9,6 +9,8 @@
 
 > **Important interpretation of the requested improvement:** The goal is to replace the current **delete-and-reinsert TMP/DQ strategy** with **change-aware `MERGE` operations keyed by the stable `SOURCE_ROW_ID` for the *same source-file version***. **Never replace or regenerate `SOURCE_ROW_ID` in immutable STG just because a TMP row matches.** A corrected/reordered CSV creates a *new* file version and often new physical row IDs; that is a separate correction/replay workflow, not something `MERGE ON SOURCE_ROW_ID` solves by itself.
 
+> **Implementation checkpoint (2026-11-19):** The user subsequently approved an expandable TaskGroup graph in `retail_full_etl`; preserve that approved design rather than reverting to child triggers. Conditional TMP/DQ MERGE and full-source configuration validation are now implemented, with local SQL regression tests. Real Snowflake fixture/replay verification is opt-in and has not yet run. See `evidence/silver_merge_checkpoint.md`. Descriptions below of the original delete/reinsert implementation are historical context, not the latest code. Date scoping, complete readiness, and audit controls remain pending.
+
 ---
 
 ## 1. Outcome / definition of done
@@ -157,7 +159,7 @@ flowchart TD
   MANIFEST --> RECON
 ```
 
-**Keep modules separated:** existing Python DAGs and SQL files remain independent; controller uses child triggers with `wait_for_completion=True`. TaskGroups/one expanded graph are **not requested now** and must not be introduced without approval. Temporary work tables for `prepare_*` + `merge_*` must run in the **same Snowflake session** where applicable.
+**Keep modules separated:** existing Python DAGs and SQL files remain independent. The subsequently approved controller uses expandable TaskGroups with real tasks; standalone layer DAGs remain available. Carry window/batch context consistently through those groups rather than requiring child-run `conf`. Temporary work tables for `prepare_*` + `merge_*` must run in the **same Snowflake session** where applicable.
 
 **DDL versus DML:** `include/sql/ddl/*` creates structures in a controlled migration; the ETL DAG executes repeatable loading SQL. Do **not** run `CREATE OR REPLACE` on populated production/STG/TGT tables; ordinary Snowflake DDL should not occur inside a transaction intended to atomically `MERGE` TMP/DQ because DDL causes implicit commits. See Snowflake Transactions reference.
 
@@ -353,7 +355,7 @@ Do not enable Policy B by quietly weakening Policy A's checksum rejection. Imple
 
 ### Current limitations (implement before final submission)
 
-- `retail_full_etl` currently triggers three child DAGs in sequence, but the current STG DAG uses `file_limit=0` = **all recognized files on disk**, not a selected start/end date.
+- `retail_full_etl` now runs three expandable TaskGroups in sequence, but the current STG tasks use `file_limit=0` = **all recognized files on disk**, not a selected start/end date. Remaining references to child triggers below describe the original design; adapt their window/failure requirements to the approved TaskGroup design.
 - TMP and Gold currently read **all** STG/TMP records, not an explicitly passed five-day processing scope.
 - The basic STG DAG discovers files but does **not** yet implement the assignment's complete sensor/timeout contract for all required applicable sources.
 - The current `BATCH_ID` derives from an Airflow `run_id` for original STG ingestion. This is execution lineage, **not a stable logical batch identity across retries/replays**.

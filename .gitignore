@@ -54,3 +54,4 @@ docker-compose.override.yml
 *.env
 secrets/
 *.txt
+!requirements-test.txt
