@@ -1,151 +1,143 @@
-# Retail ETL — Airflow / Snowflake
+# Retail ETL with Airflow and Snowflake
 
-Airflow 3.3.2 in Docker/WSL2 loads CSV files into **STG (Bronze)**, validates
-them into **TMP (Silver)** or **DQ**, then loads **TGT (Gold)** dimensions and
-facts. Reconciliation failures fail the overall DAG.
+This pipeline loads item master, store master, POS sales, and inventory snapshot CSVs into Snowflake. It preserves raw input, quarantines invalid rows, and builds historical dimensions and facts.
 
-## Current entry points
+The assignment requires five consecutive business dates in one run. The fixture covers **2026-11-09 through 2026-11-13**: five files each for items, sales, and inventory, plus two store snapshots. All 17 files can run together, but a date-scoped five-day backfill is **not yet supported**.
 
-- `retail_full_etl`: recommended full-pipeline entry point. Its expandable
-  `run_stg`, `run_tmp`, and `run_gold` TaskGroups reuse the existing tasks.
-  Default `{"file_limit": 0}` selects all recognized CSVs.
-- `retail_stg_ingestion`: standalone ingestion; default `file_limit=1` is a smoke test.
-- `retail_tmp_processing`: standalone Silver validation/publication after STG.
-- `retail_gold_pipeline`: standalone dimensions, facts, and reconciliation after TMP.
-- `retail_tgt_dimensions`: older dimensions-only entry point; not needed for a full run.
+## Architecture
 
-**Do not run these entry points concurrently.** Per-DAG concurrency is one,
-but does not prevent different DAGs from publishing the same shared tables.
-The full DAG runs its own tasks, not separate child DAG runs. STG `BATCH_ID`
-records the run that first ingested a file; skipped replay retains that lineage.
+`retail_full_etl` runs three expandable TaskGroups in order:
 
-Existing connections: `file_con` (landing directory `/opt/airflow/data`) and
-`retail_snowflake`. STG/TMP use `config/retail_etl.json` and `config/retail_tmp.json`.
-Gold reads the `retail_gold_config` Airflow Variable; its non-secret source is
-`config/retail_gold_config.json`. Never commit connection credentials.
+```text
+CSV files -> run_stg -> run_tmp -> run_gold -> reconciliation
+             Bronze    Silver     Gold
+```
 
-## Silver conditional MERGE checkpoint
+- **STG (Bronze):** `discover_files` finds CSVs; `ingest_one.expand` maps one task per file. Each task checks the manifest, converts rows to JSONL, uploads both files to `RETAIL_DWH.STG.CSV_LANDING`, and copies JSONL into a temporary buffer. Raw rows and manifest entries merge transactionally. Four STG tables preserve `RAW_PAYLOAD VARIANT` and lineage, including business defects.
+- **TMP (Silver):** Four tasks validate item, store, sales, and inventory rows in that order. Accepted rows go to the corresponding typed TMP tables; rejected rows go to DQ.
+- **TGT (Gold):** Dimensions load before `FCT_SALES` and `FCT_INVENTORY`. Reconciliation is the final task and fails the DAG if checks do not pass.
 
-`dags/full_etl_pipeline/silver_processing.py` runs the original four classifiers,
-then publishes using separate SQL files in `include/sql/silver/`:
+The controller reuses tasks, not child-DAG triggers. Standalone DAGs are `retail_stg_ingestion`, `retail_tmp_processing`, and `retail_gold_pipeline`; `retail_tgt_dimensions` is dimensions-only. **Do not run these concurrently against shared tables.**
 
-1. Build the session-local decision table **before** the DML transaction.
-2. Check physical identity uniqueness and exact STG/work coverage.
-3. Remove only dispositions that change accepted↔rejected.
-4. Merge accepted rows on `SOURCE_ROW_ID`, and rejected rows on
-   `(SOURCE_TYPE, SOURCE_ROW_ID)`, with complete null-safe changed-value checks.
-5. Verify counts, classification, and exclusivity before commit; rollback on error.
+Aggregate means Gold roll-ups built from TGT in the assignment terminology. No Aggregate mart is implemented.
 
-Identical replay does not rewrite TMP/DQ, preserving `PROCESSED_AT` and
-`REJECTED_AT`. Raw STG rows and IDs are never updated. DQ is a **current
-disposition** table, not append-only decision history. No DDL migration is needed.
+## Data quality gates
 
-**Not yet completed:** date-scoped five-day parameters/publication, complete input
-readiness sensors, cross-DAG locking, logical batch/day audit, persisted reconciliation,
-and full Snowflake acceptance evidence. Discovery still selects all recognized files;
-having five fixture dates on disk is not a date-scoped backfill feature.
-Do not change validation rules on working data without downstream Gold repair:
-the current Gold merge does not remove sales lines that become rejected.
-Same-name changed files remain deliberately rejected (Policy A); versioned
-corrections and aggregates are separate optional enhancements.
+Ingestion rejects structurally malformed CSVs, such as duplicate headers or incorrect row widths, rather than silently dropping rows. Business validation happens in `include/sql/silver/`:
 
-## Safe local tests
+| SQL file | Checks |
+| --- | --- |
+| `validate_item_master.sql` | Required item/subclass values, snapshot dates, prices, active flags, duplicate item snapshots |
+| `validate_store_master.sql` | Required store/district values, snapshot dates, active flags, duplicate store snapshots |
+| `validate_pos_sales.sql` | Missing transaction/store/item keys, invalid or negative/zero quantities, prices, discounts, sales amounts, unknown references, duplicate transaction lines |
+| `validate_inventory_snapshot.sql` | Required keys, nonnegative quantities/costs/values, value arithmetic, unknown references, duplicate daily positions |
 
-Run from the project root. Unit tests need only Python; local SQL regression
-tests require DuckDB 1.4 or newer and use disposable in-memory tables only:
+Sales duplicates use `(TRANSACTION_ID, LINE_NUMBER)`. Reference checks use the latest accepted master snapshot on or before the business date, so a later store snapshot is not applied backward.
+
+Each `load_tmp_*` task builds a decision table and publishes through `silver_processing.py`. `DQ.QUARANTINE_RECORDS` retains lineage, raw payload, rejection timestamp, and a primary reason such as `NULL_ITEM_ID`, `NEGATIVE_QUANTITY`, `UNKNOWN_ITEM_ID`, or `DUPLICATE_SALES_LINE`. DQ stores current dispositions, not decision history. Rejected rows remain in STG but are excluded from TMP and normal Gold loading.
+
+Gold fact preflight checks require exactly one historical item and location match and unique business keys before publication.
+
+## History and replay behavior
+
+`DIM_SUBCLASS` and `DIM_DISTRICT` use SCD1: changed descriptions update in place. `DIM_ITEM` and `DIM_LOCN` use SCD2: changes create effective-dated versions with generated surrogate keys. Facts resolve `ITEM_SK` and `LOCN_SK` using the sale or snapshot date, not simply the current dimension row.
+
+Inventory is positional history. Unchanged daily observations collapse into one version. A change in measures or historical dimension keys starts a new version and closes the previous interval. `merge_fct_inventory.sql` preserves prior positions rather than deleting them.
+
+Replay protection works at each layer:
+
+- A file's SHA-256 and filename determine `SOURCE_FILE_ID`; its physical row number determines `SOURCE_ROW_ID` within that file version.
+- `CONTROL.FILE_MANIFEST` skips an already loaded file when its hash and stored row count match. STG inserts only missing source-row IDs.
+- Conditional TMP/DQ MERGEs update only changed values. Identical replay preserves `PROCESSED_AT` and `REJECTED_AT`; only disposition changes remove rows from the previous destination. Coverage and exclusivity checks run before commit, with rollback on failure.
+- Gold MERGEs use stable business/version keys and changed-value checks to retain existing surrogate keys on unchanged replay.
+
+Same-name files with changed bytes fail deliberately. Reordering or correcting a file is not handled automatically by source-row MERGE.
+
+## How to run
+
+### Prerequisites
+
+Use Docker Engine and Compose v2. The stack defaults to Airflow **3.3.2**, CeleryExecutor, PostgreSQL, and Redis. Configure local `.env` values including `AIRFLOW_UID`, `FERNET_KEY`, and authentication settings. Ensure Snowflake, standard, Celery, and FAB providers are installed; Compose supports `_PIP_ADDITIONAL_REQUIREMENTS` for extra dependencies. Never commit credentials.
+
+Snowflake setup requires:
+
+1. An existing `RETAIL_DWH` database with `STG`, `TMP`, `DQ`, `TGT`, and `CONTROL` schemas, the four raw STG tables, and the internal stage `RETAIL_DWH.STG.CSV_LANDING`. Their initialization DDL is **not included** in this repository.
+2. Run `include/sql/control/01_file_manifest.sql`, then `include/sql/ddl/create_tmp_dq_tables.sql`, `create_tgt_dimensions.sql`, and `create_tgt_facts.sql` in Snowflake. These create missing tables without replacing populated ones. Review their explicit `SYSADMIN` role and `SNOWFLAKE_LEARNING_WH` warehouse for your environment.
+3. A runtime role with warehouse, stage, table read/write, and temporary-table creation permissions.
+
+### Start and configure Airflow
+
+Run from the project root:
+
+```bash
+docker compose up airflow-init
+docker compose up -d
+```
+
+Open `http://localhost:8080` and configure these Airflow connections:
+
+- `file_con`: filesystem connection with Extra `{"path":"/opt/airflow/data"}`.
+- `retail_snowflake`: Snowflake connection with your account, authentication, role, warehouse, and database settings.
+
+STG and TMP read `config/retail_etl.json` and `config/retail_tmp.json`. Create the Airflow Variable **`retail_gold_config`** with the JSON contents of `config/retail_gold_config.json`. Compose mounts `config/`, `data/`, `dags/`, and `include/` under `/opt/airflow/`.
+
+Place source files in `data/` using `<source>_YYYYMMDD.csv`, where source is `item_master`, `store_master`, `pos_sales`, or `inventory_snapshot`. Check DAG imports, unpause the controller, and trigger the full run:
+
+```bash
+docker compose exec airflow-scheduler airflow dags list-import-errors --output json
+docker compose exec airflow-scheduler airflow dags unpause retail_full_etl
+docker compose exec airflow-scheduler airflow dags trigger retail_full_etl --conf '{"file_limit": 0}'
+```
+
+Follow `run_stg`, `run_tmp`, and `run_gold` in the Airflow graph. `file_limit=0` selects every recognized CSV; the standalone ingestion DAG defaults to one file for smoke testing.
+
+## How to backfill and verify
+
+Place historical files and applicable earlier master snapshots in `data/`, then use the same trigger command. Silver and Gold read all available warehouse input; SQL orders snapshots by business date to derive history. There are no `start_date`/`end_date` parameters or scheduled catchup. Filename sorting is not day-by-day orchestration.
+
+The `reconcile_gold` task executes `include/sql/reconcile/reconcile_gold.sql` and `check_gold_integrity.sql`. For each observed sales date it compares both row counts and net sales amounts:
+
+```text
+Raw sales = Accepted sales + Rejected sales
+Gold sales = Accepted sales
+```
+
+Unparseable sales amounts fail reconciliation. Integrity checks cover intervals, current versions, historical keys, sales-line matching, quarantined sales in Gold, and inventory observation coverage. Inventory versions are not expected to equal TMP observation counts. Results are logged, not persisted.
+
+Inspect the final task log or execute those SQL files in Snowflake. Check file status and rejection reasons with:
+
+```sql
+SELECT SOURCE_FILE_NAME, ROW_COUNT, LOAD_STATUS
+FROM RETAIL_DWH.CONTROL.FILE_MANIFEST ORDER BY SOURCE_FILE_NAME;
+
+SELECT SOURCE_TYPE, REASON_CODE, COUNT(*) AS ROWS_REJECTED
+FROM RETAIL_DWH.DQ.QUARANTINE_RECORDS GROUP BY SOURCE_TYPE, REASON_CODE;
+```
+
+For the supplied fixture only, expected results are 510 STG rows, 505 accepted TMP rows, five rejected sales rows, and 145 Gold sales lines totaling **1566.15**, with **61.70** rejected sales amount. The current inventory design produces 98 versions from 150 accepted daily observations. These are test examples, not runtime assumptions. `tests/fixtures/expected_results.json` is used only by tests.
+
+Run local checks without Snowflake credentials:
 
 ```bash
 PYTHONPATH=dags python3 -m unittest discover -s tests/unit -v
 PYTHONPATH=dags uv run --with 'duckdb>=1.4,<2' --no-project python -m unittest discover -s tests/integration -v
-docker compose exec -e PYTHONPATH=/opt/airflow/dags airflow-dag-processor python /opt/airflow/scripts/validate_retail_dags.py
-docker compose exec airflow-scheduler airflow dags list-import-errors --output json
 ```
 
-Alternatively, install `requirements-test.txt` in a test virtual environment and
-use its Python for integration discovery. DuckDB verifies publication SQL,
-conditional updates, exact replay, dispositions, duplicate protection, and
-rollback. It does **not** establish Snowflake-specific classifier/VARIANT behavior.
-Tests deliberately change synthetic data, never the original 17 CSVs or working warehouse.
+The second command requires `uv`; alternatively install `requirements-test.txt` in a test environment. Local SQL tests cover Silver publication and replay, not Snowflake behavior or Gold acceptance. `tests/integration/test_snowflake_silver.py` is opt-in and requires a disposable test database and private connector configuration.
 
-### Opt-in isolated Snowflake test
+## Known limitations
 
-The real fixture/replay test is skipped by default. Before enabling it, an
-authorized developer must provide an **existing disposable database** named
-`RETAIL_ETL_TEST_*`, a warehouse, and a role permitted to create schemas there.
-Keep a Snowflake Python connector JSON configuration **outside this repository**
-(fields such as `account`, `user`, `authenticator`/credentials, `warehouse`,
-`role`, and `database`). No configuration file or credentials are supplied here.
+- Date-scoped processing, complete input-readiness checks, cross-DAG locking, logical batch/day audit, and persisted reconciliation remain incomplete. Per-DAG concurrency is one, but does not protect against a different DAG writing the same tables.
+- Changed-file versioning and correction workflows are unsupported. Changing validation rules also needs downstream repair: the current Gold MERGE does not remove sales lines that become rejected.
+- Sales keys assume transaction IDs are globally unique. Store-scoped IDs would require a consistent key change across validation, loading, and reconciliation.
+- Some SQL object names remain hardcoded to `RETAIL_DWH`. Structural CSV failures fail the task; there is no separate structural quarantine workflow.
+- Full Snowflake acceptance and Gold replay evidence are pending. The conditional Silver MERGE has local regression coverage, but its opt-in Snowflake verification has not yet run.
 
-```bash
-RETAIL_TEST_ALLOW_WRITES=1 RETAIL_TEST_SNOWFLAKE_CONFIG=/absolute/private/connection.json PYTHONPATH=dags uv run --with snowflake-connector-python --no-project python -m unittest discover -s tests/integration -p test_snowflake_silver.py -v
-```
+## Project files and evidence
 
-Enabling this explicitly authorizes creation and cleanup of three uniquely named
-test schemas in that test database. It never creates a database, never targets
-`RETAIL_DWH`, rewrites only temporary test copies of SQL, and drops only schemas
-created by that invocation. The test loads the fixture into isolated STG, runs
-the real four classifiers/publication twice, asserts 505 accepted / 5 rejected
-with exact reasons, and compares all STG/TMP/DQ columns including timestamps.
-It does not test Gold or substitute for the remaining full acceptance catalog.
-
-See `evidence/silver_merge_checkpoint.md` for the actual verification status.
-
-## Standalone STG reference
-
-Prerequisites: Airflow 3.3.2 Docker stack, existing 4 STG tables,
-`file_con`, `retail_snowflake`, `RETAIL_DWH.STG.CSV_LANDING`, 17 CSV files.
-
-## Put files in existing project
-
-- Copy `include/sql/control/01_file_manifest.sql` into the project, execute in a Snowflake worksheet.
-- Configuration belongs under this project's `config/`, mounted at `/opt/airflow/config`.
-- DAGs belong under this project's `dags/`, mounted at `/opt/airflow/dags`.
-- Do not overwrite the existing connection-test DAGs, source CSVs, or 4 STG tables.
-
-## Execution
-
-1. Trigger `retail_stg_ingestion` with default `{"file_limit": 1}`.
-   Sorted filenames mean the first file is `inventory_snapshot_20261109.csv`.
-   Verify STG inventory count = 30, manifest row count = 1.
-2. Trigger with JSON config `{"file_limit": 0}`.
-   It processes all recognized CSVs (17 for current fixture). Already loaded files SKIP.
-3. Trigger with `{"file_limit": 0}` a second time; all should SKIP and totals remain identical.
-
-## Snowflake verification
-
-```sql
-SELECT 'ITEM_MASTER' AS TABLE_NAME, COUNT(*) AS N FROM RETAIL_DWH.STG.ITEM_MASTER
-UNION ALL SELECT 'STORE_MASTER', COUNT(*) FROM RETAIL_DWH.STG.STORE_MASTER
-UNION ALL SELECT 'POS_SALES', COUNT(*) FROM RETAIL_DWH.STG.POS_SALES
-UNION ALL SELECT 'INVENTORY_SNAPSHOT', COUNT(*) FROM RETAIL_DWH.STG.INVENTORY_SNAPSHOT;
--- Expected after first full run: 150, 60, 150, 150 (510 total).
-
-SELECT SOURCE_FILE_NAME, ROW_COUNT, LOAD_STATUS
-FROM RETAIL_DWH.CONTROL.FILE_MANIFEST ORDER BY SOURCE_FILE_NAME;
--- Expected: 17 filenames, each ROW_COUNT=30, LOAD_STATUS=LOADED.
-
-SELECT COUNT(*) AS NULL_ITEM_ID_IN_RAW
-FROM RETAIL_DWH.STG.POS_SALES
-WHERE SOURCE_FILE_DATE='2026-11-11'
-  AND NULLIF(TRIM(RAW_PAYLOAD:item_id::VARCHAR),'') IS NULL;
--- Expected: 2 (raw defects preserved, not quarantined here).
-
-SELECT COUNT(DISTINCT SOURCE_ROW_ID) FROM RETAIL_DWH.STG.POS_SALES;
--- Expected: 150.
-```
-
-## Behavior and limitations
-
-- `file_limit` is a temporary learning/smoke-test option. `0` means every recognized CSV.
-- `max_active_tasks=1` serializes dynamic mapped tasks to simplify safe first loads.
-  With more sophisticated orchestration, implement transactional file claims and concurrency tests.
-- Same filename with different content fails closed and needs an explicit correction/backfill policy.
-- Invalid *business* rows (negative quantity, blank item ID) are preserved in STG.
-- Physically malformed CSV (duplicate headers, mismatched row width, invalid quoting) fails the file;
-  the original CSV is never deleted and can be remediated. Production needs a structural
-  ingestion quarantine/audit workflow for these failures.
-- Test oracle `tests/fixtures/expected_results.json` is never read by this DAG.
-- Schema names in the temporary buffer DDL are currently project-specific;
-  refactor them into configuration if you deploy into another database/schema.
-- Snowflake standard-table unique constraints are not enforcement mechanisms; this initial
-  DAG prevents concurrent runs/tasks, checks manifest identities and uses MERGE.
+- `dags/full_etl_pipeline/`: controller, standalone DAGs, and Silver publication helper.
+- `include/sql/`: initialization DDL, validation, MERGE, and reconciliation SQL.
+- `tests/`: unit tests, local SQL regression tests, isolated Snowflake test, and fixture expectations.
+- `scripts/validate_retail_dags.py`: DAG structure and configuration checks in Airflow.
+- `evidence/silver_merge_checkpoint.md`: verification status, local test results, and historical run observations. Execution logs are under `logs/dag_id=retail_full_etl/` when retained locally.
+- `retail_etl_architecture.mmd`: architecture diagram; `requirements_and_implementation.md`: assignment contract and remaining work.

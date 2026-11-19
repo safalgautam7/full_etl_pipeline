@@ -1,0 +1,217 @@
+flowchart TB
+
+    %% ===================================
+    %% AIRFLOW CONTROLLER - IMPLEMENTED
+    %% TaskGroups reuse real tasks, not child DAG triggers.
+    %% ===================================
+    subgraph ORCH["AIRFLOW 3.3.2 - MASTER ORCHESTRATION"]
+        direction LR
+        START["retail_full_etl<br/>Manual trigger; file_limit = 0 by default<br/>One DAG run; no child-DAG triggers"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
+        RSTG --> RTMP["run_tmp<br/>Expandable TaskGroup"]
+        RTMP --> RTGT["run_gold<br/>Expandable TaskGroup"]
+    end
+
+    %% ===================================
+    %% SOURCE DATA - CURRENT TEST FIXTURE
+    %% Counts are fixture details, not runtime constraints.
+    %% ===================================
+    subgraph SOURCES["SOURCE - LOCAL DATA DIRECTORY | CURRENT 17-CSV FIXTURE"]
+        direction LR
+        SI["ITEM MASTER<br/>5 daily CSV files"]
+        SS["STORE MASTER<br/>2 applicable snapshots"]
+        SP["POS SALES<br/>5 daily CSV files"]
+        SN["INVENTORY<br/>5 daily CSV files"]
+    end
+
+    %% ===================================
+    %% STG - BRONZE
+    %% ===================================
+    subgraph BRONZE["STG - BRONZE | run_stg | Reuses retail_stg_ingestion tasks"]
+        direction TB
+        DISC["discover_files<br/>Recognize CSV patterns<br/>Select all recognized files by default; not date-scoped"]
+        MAP["ingest_one.expand<br/>One mapped task per physical file"]
+        HASH["Calculate SHA-256 and SOURCE_FILE_ID<br/>Check manifest before loading<br/>Identical loaded file: SKIP<br/>Same filename with changed bytes: FAIL"]
+        UPLOAD["Validate CSV structure; create JSONL with SOURCE_ROW_ID<br/>Snowflake CSV_LANDING<br/>PUT + COPY into load buffer; verify row identities"]
+        PUBLISH["BEGIN: MERGE immutable STG rows and file manifest<br/>COMMIT or ROLLBACK<br/>Never overwrite existing raw rows or IDs"]
+        MANIFEST[("CONTROL.FILE_MANIFEST<br/>Filename, hash, status, counts<br/>Original ingestion run lineage")]
+
+        STGI[("STG.ITEM_MASTER<br/>RAW_PAYLOAD VARIANT")]
+        STGS[("STG.STORE_MASTER<br/>RAW_PAYLOAD VARIANT")]
+        STGP[("STG.POS_SALES<br/>RAW_PAYLOAD VARIANT")]
+        STGN[("STG.INVENTORY_SNAPSHOT<br/>RAW_PAYLOAD VARIANT")]
+
+        DISC --> MAP --> HASH -->|"New file"| UPLOAD --> PUBLISH
+        PUBLISH --> MANIFEST
+        PUBLISH --> STGI
+        PUBLISH --> STGS
+        PUBLISH --> STGP
+        PUBLISH --> STGN
+    end
+
+    %% ===================================
+    %% TMP - SILVER
+    %% Each load_tmp task executes validation AND atomic publication.
+    %% ===================================
+    subgraph SILVER["TMP - SILVER | run_tmp | Reuses retail_tmp_processing tasks"]
+        direction TB
+
+        VI["load_tmp_item_master<br/>validate_item_master.sql<br/>Type and master validation + publication"]
+        VS["load_tmp_store_master<br/>validate_store_master.sql<br/>Store and district validation + publication"]
+        VP["load_tmp_pos_sales<br/>validate_pos_sales.sql<br/>Required keys, quantities,<br/>references and duplicates + publication"]
+        VN["load_tmp_inventory_snapshot<br/>validate_inventory_snapshot.sql<br/>Quantity, cost and value checks + publication"]
+
+        TI[("TMP.ITEM_MASTER")]
+        TS[("TMP.STORE_MASTER")]
+        TP[("TMP.POS_SALES")]
+        TN[("TMP.INVENTORY_SNAPSHOT")]
+
+        VI --> VS --> VP --> VN
+
+        VI -->|"Accepted: conditional MERGE"| TI
+        VS -->|"Accepted: conditional MERGE"| TS
+        VP -->|"Accepted: conditional MERGE"| TP
+        VN -->|"Accepted: conditional MERGE"| TN
+
+        DQ[("DQ.QUARANTINE_RECORDS<br/>Source lineage, reason code,<br/>reason detail, raw payload<br/>Current disposition, not append-only history")]
+
+        VI -->|"Rejected: conditional MERGE"| DQ
+        VS -->|"Rejected: conditional MERGE"| DQ
+        VP -->|"Rejected: conditional MERGE"| DQ
+        VN -->|"Rejected: conditional MERGE"| DQ
+
+        CONTRACT["IMPLEMENTED - Publication contract inside each Silver task<br/>Build session-local WORK table before BEGIN<br/>Check unique identities and exact STG/work coverage<br/>BEGIN: remove only accepted/rejected disposition flips<br/>MERGE TMP on SOURCE_ROW_ID<br/>MERGE DQ on SOURCE_TYPE + SOURCE_ROW_ID<br/>Null-safe changed-value checks; unchanged rows are no-ops<br/>Verify counts, classification and exclusivity before COMMIT<br/>ROLLBACK and raise on error; preserve unchanged timestamps"]
+        CONTRACT -.->|"Applies to all four tasks"| VI
+    end
+
+    %% ===================================
+    %% TGT - GOLD
+    %% Arrows in this section retain actual sequential task order.
+    %% ===================================
+    subgraph GOLD["TGT - GOLD | run_gold | Reuses retail_gold_pipeline tasks"]
+        direction TB
+
+        D1[("DIM_SUBCLASS<br/>load_dim_subclass - SCD1 update in place")]
+        D2[("DIM_DISTRICT<br/>load_dim_district - SCD1 update in place")]
+
+        D3[("DIM_ITEM<br/>load_dim_item - SCD2 item history<br/>Surrogate key + effective dates")]
+        D4[("DIM_LOCN<br/>load_dim_locn - SCD2 store history<br/>Surrogate key + effective dates")]
+
+        FS[("FCT_SALES<br/>load_sales - MERGE accepted sales lines<br/>Historical ITEM_SK / LOCN_SK at sale date")]
+
+        FI[("FCT_INVENTORY<br/>load_inventory - Validate daily observations<br/>Historical keys at snapshot date<br/>Change-compressed position history; preserve prior versions")]
+
+        REC["reconcile_gold<br/>Daily sales row and amount checks<br/>Historical keys, interval and uniqueness checks<br/>Inventory observation coverage checks<br/>Raise on mismatch; results logged, not persisted"]
+
+        D1 --> D2 --> D3 --> D4
+        D4 --> FS --> FI --> REC
+    end
+
+    %% ===================================
+    %% EXECUTION AND DATA LINKS
+    %% Dotted orchestration links mean containment/reuse, not triggers.
+    %% ===================================
+    RSTG -.->|"Contains real tasks"| DISC
+    RTMP -.->|"Contains real tasks"| VI
+    RTGT -.->|"Contains real tasks"| D1
+    PUBLISH -->|"All mapped ingest tasks succeed before Silver"| VI
+    VN -->|"Silver TaskGroup succeeds before Gold"| D1
+
+    SI --> DISC
+    SS --> DISC
+    SP --> DISC
+    SN --> DISC
+
+    STGI --> VI
+    STGS --> VS
+    STGP --> VP
+    STGN --> VN
+
+    TI --> D1
+    TI --> D3
+    TS --> D2
+    TS --> D4
+    TP --> FS
+    TN --> FI
+
+    D3 -->|"Historical item key"| FS
+    D4 -->|"Historical store key"| FS
+    D3 -->|"Historical item key"| FI
+    D4 -->|"Historical store key"| FI
+
+    STGP -->|"Raw sales counts and amounts"| REC
+    TP -->|"Accepted sales counts and amounts"| REC
+    DQ -->|"Rejected sales and exclusion checks"| REC
+
+    %% ===================================
+    %% RECONCILIATION
+    %% Decision and outcomes illustrate reconcile_gold behavior,
+    %% not additional Airflow tasks or persisted batch status.
+    %% ===================================
+    subgraph ACCEPT["FINAL QUALITY GATE - reconcile_gold OUTCOME"]
+        direction TB
+        RULES{"All checks pass?<br/>Raw sales = Accepted sales + Rejected sales<br/>Gold sales = Accepted sales<br/>Valid history and inventory observation coverage"}
+        OK(["Pipeline SUCCESS"])
+        BAD(["Pipeline FAILED<br/>Investigate reconciliation"])
+        RULES -->|"Yes"| OK
+        RULES -->|"No: raise error"| BAD
+    end
+    REC --> RULES
+
+    %% ===================================
+    %% OPERATING CONSTRAINTS
+    %% ===================================
+    SAFETY["max_active_runs = 1; max_active_tasks = 1<br/>Standalone layer DAGs remain available<br/>Do not run them concurrently with retail_full_etl<br/>Per-DAG limits do not provide cross-DAG locking"]
+    SAFETY -.-> ORCH
+    REPAIR["Rule changes require downstream Gold repair<br/>Current Gold MERGE does not remove sales lines that become rejected"]
+    CONTRACT -.-> REPAIR
+
+    %% ===================================
+    %% REMAINING REQUIRED IMPROVEMENTS
+    %% Conditional TMP/DQ MERGE is implemented above, not TODO.
+    %% ===================================
+    subgraph NEXT["REQUIRED IMPROVEMENTS - TODO"]
+        direction TB
+        N2["P2 - Date-scoped backfill<br/>Pass start_date and end_date through TaskGroups<br/>Five consecutive business days"]
+        N3["P2 - Complete file readiness sensors<br/>Timeout on missing required inputs<br/>Use latest applicable store snapshot, never a future snapshot"]
+        N4["P2 - Logical batch tracking and cross-DAG locking<br/>CONTROL.ETL_BATCH; per-day and per-attempt audit<br/>Persist reconciliation results"]
+        N5["P3 - Scoped processing<br/>Limit TMP and Gold publication to batch dates<br/>Verify chronological historical dependency handling"]
+        N6["P5 - Complete Snowflake acceptance and replay evidence<br/>Local unit and SQL regression tests implemented<br/>Opt-in isolated Snowflake Silver test available, not yet run<br/>Verify stable results, SCD keys, history and timestamps"]
+    end
+
+    %% ===================================
+    %% OPTIONAL IMPROVEMENTS
+    %% ===================================
+    subgraph LATER["OPTIONAL FUTURE ENHANCEMENTS"]
+        direction TB
+        O1["Versioned corrected-file handling<br/>Preserve immutable STG history<br/>Compare using business keys<br/>Current policy rejects same-name changed files"]
+        O2["Gold aggregate mart<br/>Daily sales rollups from TGT"]
+    end
+
+    N2 -.-> ORCH
+    N3 -.-> DISC
+    N4 -.-> MANIFEST
+    N5 -.-> GOLD
+    N6 -.-> ACCEPT
+    O1 -.-> MANIFEST
+    FS -.-> O2
+
+    %% ===================================
+    %% STYLING
+    %% ===================================
+    classDef implemented fill:#E5F4EC,stroke:#287A53,color:#143E2B,stroke-width:1.5px;
+    classDef source fill:#EAF1FA,stroke:#446B9B,color:#173653;
+    classDef storage fill:#EEF1F5,stroke:#637487,color:#273747;
+    classDef quarantine fill:#FCE8E8,stroke:#C04A4A,color:#742727;
+    classDef planned fill:#FFF2DB,stroke:#BB8532,color:#63451C,stroke-width:1.5px,stroke-dasharray:5 4;
+    classDef optional fill:#F2F2F2,stroke:#888888,color:#454545,stroke-dasharray:4 4;
+    classDef success fill:#DDF4E5,stroke:#238354,color:#145C37;
+    classDef failure fill:#FBE2E2,stroke:#BD4040,color:#7B2020;
+
+    class START,RSTG,RTMP,RTGT,DISC,MAP,HASH,UPLOAD,PUBLISH,VI,VS,VP,VN,CONTRACT,REC implemented;
+    class SI,SS,SP,SN source;
+    class STGI,STGS,STGP,STGN,MANIFEST,TI,TS,TP,TN,D1,D2,D3,D4,FS,FI storage;
+    class DQ quarantine;
+    class N2,N3,N4,N5,N6 planned;
+    class O1,O2,SAFETY,REPAIR optional;
+    class OK success;
+    class BAD failure;
