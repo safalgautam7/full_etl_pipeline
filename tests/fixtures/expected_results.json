@@ -1,0 +1,75 @@
+{
+  "expectations": [
+    {
+      "business_date": "2026-11-09",
+      "raw_sales_rows": 30,
+      "expected_accepted_sales_rows": 30,
+      "expected_quarantined_sales_rows": 0,
+      "expected_quarantine_reasons": {},
+      "raw_sales_amount": "303.90",
+      "eligible_sales_amount": "303.90",
+      "excluded_sales_amount": "0.00"
+    },
+    {
+      "business_date": "2026-11-10",
+      "raw_sales_rows": 30,
+      "expected_accepted_sales_rows": 30,
+      "expected_quarantined_sales_rows": 0,
+      "expected_quarantine_reasons": {},
+      "raw_sales_amount": "321.00",
+      "eligible_sales_amount": "321.00",
+      "excluded_sales_amount": "0.00"
+    },
+    {
+      "business_date": "2026-11-11",
+      "raw_sales_rows": 30,
+      "expected_accepted_sales_rows": 25,
+      "expected_quarantined_sales_rows": 5,
+      "expected_quarantine_reasons": {
+        "NULL_ITEM_ID": 2,
+        "NEGATIVE_QUANTITY": 1,
+        "UNKNOWN_ITEM_ID": 1,
+        "DUPLICATE_SALES_LINE": 1
+      },
+      "raw_sales_amount": "343.20",
+      "eligible_sales_amount": "281.50",
+      "excluded_sales_amount": "61.70"
+    },
+    {
+      "business_date": "2026-11-12",
+      "raw_sales_rows": 30,
+      "expected_accepted_sales_rows": 30,
+      "expected_quarantined_sales_rows": 0,
+      "expected_quarantine_reasons": {},
+      "raw_sales_amount": "332.20",
+      "eligible_sales_amount": "332.20",
+      "excluded_sales_amount": "0.00"
+    },
+    {
+      "business_date": "2026-11-13",
+      "raw_sales_rows": 30,
+      "expected_accepted_sales_rows": 30,
+      "expected_quarantined_sales_rows": 0,
+      "expected_quarantine_reasons": {},
+      "raw_sales_amount": "327.55",
+      "eligible_sales_amount": "327.55",
+      "excluded_sales_amount": "0.00"
+    }
+  ],
+  "expected_total_files": 17,
+  "expected_total_raw_records": 510,
+  "expected_stg_rows_by_source": {
+    "item_master": 150,
+    "store_master": 60,
+    "pos_sales": 150,
+    "inventory_snapshot": 150
+  },
+  "expected_store_snapshot_dates": [
+    "2026-11-09",
+    "2026-11-11"
+  ],
+  "expected_accepted_sales_total": 145,
+  "expected_quarantine_sales_total": 5,
+  "expected_gold_net_sales_total": "1566.15",
+  "expected_excluded_sales_total": "61.70"
+}

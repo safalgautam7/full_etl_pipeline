@@ -1,0 +1,113 @@
+{
+  "version": "selected-17-file-variant",
+  "file_count": 17,
+  "total_rows": 510,
+  "store_snapshot_dates": [
+    "2026-11-09",
+    "2026-11-11"
+  ],
+  "files": [
+    {
+      "file": "inventory_snapshot_20261109.csv",
+      "business_date": "2026-11-09",
+      "rows": 30,
+      "sha256": "221dcd6788c3d8e2b955af6cbf7b620616e96221e79ed226a6c1b13db6a8fc65"
+    },
+    {
+      "file": "inventory_snapshot_20261110.csv",
+      "business_date": "2026-11-10",
+      "rows": 30,
+      "sha256": "a5423d8f2cea4cda95412ddb75e66430e179eac8a4afa7df626567c15487a105"
+    },
+    {
+      "file": "inventory_snapshot_20261111.csv",
+      "business_date": "2026-11-11",
+      "rows": 30,
+      "sha256": "a9e9eeb7917c38d3c410633389288dca7e13662fcda0ab5d2a374483267cb540"
+    },
+    {
+      "file": "inventory_snapshot_20261112.csv",
+      "business_date": "2026-11-12",
+      "rows": 30,
+      "sha256": "7dc5036a9afa3970f79a8d6873a3fd568376719e9a22711530da0128d1fbf5f1"
+    },
+    {
+      "file": "inventory_snapshot_20261113.csv",
+      "business_date": "2026-11-13",
+      "rows": 30,
+      "sha256": "f49464cfd0aa01bb432d76b24c2fb62b2ebf3ee87ef103611848f3b3c52b78b8"
+    },
+    {
+      "file": "item_master_20261109.csv",
+      "business_date": "2026-11-09",
+      "rows": 30,
+      "sha256": "d4d7b1a68bddd21672fbf40df7726cfffd9b5bda76266c241ff776686e64b6ae"
+    },
+    {
+      "file": "item_master_20261110.csv",
+      "business_date": "2026-11-10",
+      "rows": 30,
+      "sha256": "ac5e013550b512d663bfcc96be711bb1dfc2e160c8506b5544f9971b1c6dbe0a"
+    },
+    {
+      "file": "item_master_20261111.csv",
+      "business_date": "2026-11-11",
+      "rows": 30,
+      "sha256": "96bf8e0b2ebade8dd84626490c3bb4971149a65d9fe4fe990098c145f29d3810"
+    },
+    {
+      "file": "item_master_20261112.csv",
+      "business_date": "2026-11-12",
+      "rows": 30,
+      "sha256": "d097d1d724241926fb20aa1865ee8cdb6b9c265109fe681ada76eaf0da3a7e2d"
+    },
+    {
+      "file": "item_master_20261113.csv",
+      "business_date": "2026-11-13",
+      "rows": 30,
+      "sha256": "e54f4a1e9722a5df406d30dee0bfb5a4a3c13aea74f31eab487c5eb4386c1562"
+    },
+    {
+      "file": "pos_sales_20261109.csv",
+      "business_date": "2026-11-09",
+      "rows": 30,
+      "sha256": "ac809a10a8c4c87b3d8af3047dfac7a114f192ebcf24589cf02bc983376b55d4"
+    },
+    {
+      "file": "pos_sales_20261110.csv",
+      "business_date": "2026-11-10",
+      "rows": 30,
+      "sha256": "aa8294274327f4de6309fe6d3c7277e9d068433fa844cd9bfd2532b6aa1733ca"
+    },
+    {
+      "file": "pos_sales_20261111.csv",
+      "business_date": "2026-11-11",
+      "rows": 30,
+      "sha256": "6da25c9a976e2da91b2167df93dd7423e3ff02da3d9f3571682bdf86f0088ef6"
+    },
+    {
+      "file": "pos_sales_20261112.csv",
+      "business_date": "2026-11-12",
+      "rows": 30,
+      "sha256": "e56d0cfff7860d517940c66ab564d348570963b432aa0711af42c40095e4a710"
+    },
+    {
+      "file": "pos_sales_20261113.csv",
+      "business_date": "2026-11-13",
+      "rows": 30,
+      "sha256": "87abc13e9ebe00ce1537811a983145f010133541bf9fa38792296244a6034041"
+    },
+    {
+      "file": "store_master_20261109.csv",
+      "business_date": "2026-11-09",
+      "rows": 30,
+      "sha256": "0298174235cd0f3954f37d977cbd5484a1a4bd50f3cbe4ea717ae1253a20cc42"
+    },
+    {
+      "file": "store_master_20261111.csv",
+      "business_date": "2026-11-11",
+      "rows": 30,
+      "sha256": "cb2790b194c47899262dbfa696739d42e6b61e0265698b254b939af08de0efd8"
+    }
+  ]
+}

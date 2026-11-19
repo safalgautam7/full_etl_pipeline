@@ -27,12 +27,12 @@ airflow.db
 airflow.sqlite
 
 # Local data files for ETL
-data/
+# data/
 tmp/
-*.csv
+# *.csv
 *.tsv
 *.parquet
-*.json
+# *.json
 
 # OS-specific
 .DS_Store

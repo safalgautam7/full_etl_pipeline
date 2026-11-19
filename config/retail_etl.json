@@ -1,0 +1,12 @@
+{
+  "file_conn_id": "file_con",
+  "snowflake_conn_id": "retail_snowflake",
+  "stage": "RETAIL_DWH.STG.CSV_LANDING",
+  "file_manifest_table": "RETAIL_DWH.CONTROL.FILE_MANIFEST",
+  "stg_tables": {
+    "item_master": "RETAIL_DWH.STG.ITEM_MASTER",
+    "store_master": "RETAIL_DWH.STG.STORE_MASTER",
+    "pos_sales": "RETAIL_DWH.STG.POS_SALES",
+    "inventory_snapshot": "RETAIL_DWH.STG.INVENTORY_SNAPSHOT"
+  }
+}

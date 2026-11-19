@@ -1,0 +1,26 @@
+{
+  "snowflake_conn_id": "retail_snowflake",
+  "quarantine_table": "RETAIL_DWH.DQ.QUARANTINE_RECORDS",
+  "sources": {
+    "item_master": {
+      "stg": "RETAIL_DWH.STG.ITEM_MASTER",
+      "tmp": "RETAIL_DWH.TMP.ITEM_MASTER",
+      "work": "RETAIL_DWH.TMP.WORK_ITEM_MASTER"
+    },
+    "store_master": {
+      "stg": "RETAIL_DWH.STG.STORE_MASTER",
+      "tmp": "RETAIL_DWH.TMP.STORE_MASTER",
+      "work": "RETAIL_DWH.TMP.WORK_STORE_MASTER"
+    },
+    "pos_sales": {
+      "stg": "RETAIL_DWH.STG.POS_SALES",
+      "tmp": "RETAIL_DWH.TMP.POS_SALES",
+      "work": "RETAIL_DWH.TMP.WORK_POS_SALES"
+    },
+    "inventory_snapshot": {
+      "stg": "RETAIL_DWH.STG.INVENTORY_SNAPSHOT",
+      "tmp": "RETAIL_DWH.TMP.INVENTORY_SNAPSHOT",
+      "work": "RETAIL_DWH.TMP.WORK_INVENTORY_SNAPSHOT"
+    }
+  }
+}
