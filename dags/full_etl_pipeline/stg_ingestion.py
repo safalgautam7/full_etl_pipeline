@@ -1,7 +1,7 @@
 """ idempotent CSV -> JSONL -> Snowflake STG ingestion.
 Airflow 3.3.2. Manual trigger: {"file_limit": 1} for smoke test,
-{"file_limit": 0} for all CSVs. Optional start_date/end_date (YYYY-MM-DD)
-select an inclusive filename range and earlier master dependencies; use limit 0.
+{"file_limit": 0} for all CSVs in manual bulk runs. Native full-pipeline
+scheduled/backfill runs select only their data interval's business date.
 Config in /opt/airflow/config/retail_etl.json.
 
 """
@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pendulum
 from airflow.sdk import dag, get_current_context, task
-from full_etl_pipeline.file_selection import FILE_PATTERN, inspect_filename, select_files
+from full_etl_pipeline.daily_processing import FILE_PATTERN, inspect_filename, processing_day, select_day_files
 
 CONFIG_PATH = Path("/opt/airflow/config/retail_etl.json")
 # Identifiers are read from external config, but must not allow arbitrary SQL.
@@ -93,7 +93,7 @@ def put_and_check(cursor, local_path, stage_prefix):
     catchup=False,
     max_active_runs=1,
     max_active_tasks=1,  # Serial for initial safety; map creates separate tasks.
-    params={"file_limit": 1, "start_date": None, "end_date": None},
+    params={"file_limit": 1},
     tags=["retail", "stg", "idempotent"],
 )
 def retail_stg_ingestion():
@@ -106,12 +106,31 @@ def retail_stg_ingestion():
         if not root.is_dir():
             raise FileNotFoundError(root)
         names = sorted(p.name for p in root.glob("*.csv") if FILE_PATTERN.fullmatch(p.name))
-        params = get_current_context()["params"]
-        chosen, dependencies = select_files(
-            names, params["file_limit"], params.get("start_date"), params.get("end_date")
-        )
-        print(f"Selection range: {params.get('start_date')} to {params.get('end_date')}")
-        print(f"Additional earlier master snapshots: {dependencies}")
+        context = get_current_context()
+        day = processing_day(context)
+        if day:
+            chosen = select_day_files(names, day)
+            # A prior bulk load is replayable; only NEW/CHANGED historical input
+            # is refused. Existing future interval boundaries remain intact.
+            from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
+            from full_etl_pipeline.daily_processing import latest_warehouse_date, verify_replay_files
+
+            with closing(SnowflakeHook(snowflake_conn_id=cfg["snowflake_conn_id"]).get_conn()) as conn:
+                with closing(conn.cursor()) as cursor:
+                    latest = latest_warehouse_date(cursor, cfg["stg_tables"].values())
+                    if latest and latest.isoformat() > day:
+                        verify_replay_files(cursor, cfg, [(name, checksum(root / name)) for name in chosen])
+                        print(f"{day}: verified unchanged already-loaded files; preserving later history through {latest}")
+            print(f"{day}: selected exactly {chosen}")
+            return chosen
+        if any(context["params"].get(key) is not None for key in ("start_date", "end_date")):
+            raise ValueError("Choose dates in Airflow's Backfill dialog, not Trigger JSON")
+        if not names:
+            raise ValueError(f"No recognized CSV inputs under {root}")
+        limit = int(context["params"]["file_limit"])
+        if limit < 0:
+            raise ValueError("file_limit must be nonnegative")
+        chosen = names if limit == 0 else names[:limit]
         print(f"Discovered {len(names)} recognized files; selecting {len(chosen)}: {chosen}")
         return chosen
 

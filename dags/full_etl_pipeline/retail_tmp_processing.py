@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pendulum
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
-from airflow.sdk import dag, task
+from airflow.sdk import dag, task, get_current_context
 from full_etl_pipeline import silver_processing
 
 CONFIG_PATH = Path("/opt/airflow/config/retail_tmp.json")
@@ -38,7 +38,16 @@ def retail_tmp_processing():
         with closing(hook.get_conn()) as conn:
             conn.autocommit(True)
             with closing(conn.cursor()) as cur:
-                result = silver_processing.process_source(cur, cfg, source, SQL_DIR)
+                context = get_current_context()
+                from full_etl_pipeline.daily_processing import processing_day, process_daily_source
+
+                day = processing_day(context)
+                if day:
+                    result = process_daily_source(cur, cfg, source, day, SQL_DIR)
+                    if result is None:
+                        return
+                else:
+                    result = silver_processing.process_source(cur, cfg, source, SQL_DIR)
                 print(
                     f"TMP PASSED {source}: STG={result['raw']} "
                     f"accepted={result['accepted']} quarantined={result['quarantined']}"

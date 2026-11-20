@@ -2,11 +2,11 @@
 
 This pipeline loads item master, store master, POS sales, and inventory snapshot CSVs into Snowflake. It preserves raw input, quarantines invalid rows, and builds historical dimensions and facts.
 
-The fixture covers **2026-11-09 through 2026-11-13**: five files each for items, sales, and inventory, plus two store snapshots. Load all 17 files or select an inclusive filename-date range with applicable earlier master snapshots.
+The fixture covers **2026-11-09 through 2026-11-13**: five files each for items, sales, and inventory, plus two store snapshots. Use native Airflow Backfill to run the complete ETL one date at a time, or a manual single trigger for the original bulk load.
 
 ## Architecture
 
-`retail_full_etl` runs three expandable TaskGroups in order:
+`retail_full_etl` uses Airflow's built-in daily scheduling/backfill. Every scheduled/backfill run executes the same three TaskGroups for its own business date:
 
 ```text
 CSV files -> run_stg -> run_tmp -> run_gold -> reconciliation
@@ -17,7 +17,7 @@ CSV files -> run_stg -> run_tmp -> run_gold -> reconciliation
 - **TMP (Silver):** Four tasks validate item, store, sales, and inventory rows in that order. Accepted rows go to the corresponding typed TMP tables; rejected rows go to DQ.
 - **TGT (Gold):** Dimensions load before `FCT_SALES` and `FCT_INVENTORY`. Reconciliation is the final task and fails the DAG if checks do not pass.
 
-The controller reuses tasks, not child-DAG triggers. Standalone DAGs are `retail_stg_ingestion`, `retail_tmp_processing`, and `retail_gold_pipeline`; `retail_tgt_dimensions` is dimensions-only. **Do not run these concurrently against shared tables.**
+The existing DAG reuses layer tasks directly. There is no custom controller, helper DAG, API connection, or backfill audit table. Manual single triggers retain the original bulk behavior. Standalone layer DAGs remain available. **Do not run them or external writers concurrently against shared tables.**
 
 Aggregate means Gold roll-ups built from TGT. No Aggregate mart is implemented.
 
@@ -89,27 +89,34 @@ docker compose exec airflow-scheduler airflow dags unpause retail_full_etl
 docker compose exec airflow-scheduler airflow dags trigger retail_full_etl --conf '{"file_limit": 0}'
 ```
 
-Follow `run_stg`, `run_tmp`, and `run_gold` in the Airflow graph. Without dates, `file_limit=0` selects every recognized CSV; the standalone ingestion DAG defaults to one file for smoke testing. Date-range selection is described below.
+Follow `run_stg`, `run_tmp`, and `run_gold` in the Airflow graph. In a manual bulk run, `file_limit=0` selects every recognized CSV; standalone ingestion defaults to one file. Scheduled/native backfill runs always select their own date's complete daily inputs, regardless of the smoke-test limit.
 
 ## How to backfill and verify
 
-Place historical files and applicable earlier master snapshots in `data/`, then trigger an inclusive range:
+### Sequential daily backfill
 
-```bash
-docker compose exec airflow-scheduler airflow dags trigger retail_full_etl --conf '{"start_date":"2026-11-10","end_date":"2026-11-13","file_limit":0}'
-```
+Use the **Backfill option in the Trigger menu** on `retail_full_etl` at `http://localhost:8080`:
 
-- Supply both dates as `YYYY-MM-DD`, start on or before end. Omit both (or use JSON null) to retain all-file/limit behavior.
-- Ranges require `file_limit=0`, including standalone `retail_stg_ingestion`, whose default is 1.
-- Discovery selects in-range files and the latest available item/store snapshot on or before the start. Extra earlier dependencies are logged; future snapshots are never substituted.
-- Missing days/sources are allowed; no in-range matches fails discovery. If files begin November 10, requesting November 9–13 selects what exists. Missing applicable masters can cause unknown-reference quarantine.
-- Manifest updates are automatic; already-loaded files are skipped. The one-file-per-source-per-date naming convention is unchanged.
+1. Choose November 9–13, 2026; confirm the preview includes those five daily intervals.
+2. Set backfill **Max active runs = 1** and keep **Run backwards disabled**. Airflow's backfill concurrency setting is separate from the DAG setting.
+3. Select **Reprocess failed**. Airflow requires failed/completed reprocessing when tasks use `depends_on_past=True`; **None produces a 422 validation error**, even for a new range. Failed reprocessing also creates runs for dates with no existing run, but does not rerun successful dates. Select completed reprocessing only when deliberately replaying successful dates with unchanged inputs.
+4. Start the backfill. Airflow runs the original full ETL for Nov 9, then Nov 10, Nov 11, Nov 12, and Nov 13.
 
-For the supplied fixture, November 10–13 selects **14 files**: four each for item, sales, and inventory, plus the November 9 and November 11 store snapshots. November 9 supplies the initial store reference; November 11 supplies the later change. No November 9 sales or inventory files are selected.
+No Trigger JSON date range, new connections, or extra setup SQL is needed. Each run uses `data_interval_start` as its business date. The existing discovery task has `depends_on_past`/`wait_for_downstream`, including a direct dependency on final reconciliation: the next day cannot process until the previous full day succeeds. A failed day must be fixed/retried before later dates can proceed.
 
-To select a single day, set both dates to that day. In the Airflow UI, pass the same JSON in the trigger configuration. For ingestion only, use the same CLI command with DAG ID `retail_stg_ingestion`; this does not run Silver or Gold.
+**Run-ID dates:** `backfill__2026-11-10T00:00:00+00:00` processes the interval starting **Nov 9**, not Nov 10. For Nov 9–13 the displayed run-ID dates are Nov 10–14. Confirm **Logical Date / Data Interval Start** in the run details. Daily runs have 16 task instances on Nov 9/11 (four files) and 15 on the other days (three files); manual bulk runs over all 17 files have 29 instances.
 
-This scopes **file ingestion only**. Silver and Gold still read all warehouse inputs to derive history. The range does not delete existing data, filter Gold output, or enable scheduled catchup. Filename sorting is not day-by-day orchestration. Fixture totals below apply to the complete fixture, not necessarily to a fresh warehouse loaded with a narrower range.
+Required item/sales/inventory files must exist each day. Store files are loaded only on their own dates; other days reuse previously accepted store snapshots. Start with Nov 9 to load its initial store master. If starting later, applicable earlier masters must already be loaded. There is no separate bootstrap workflow.
+
+Silver and sales publication are day-scoped; SCD/inventory preparation reads accepted history and closes affected intervals. **A previous bulk load can be replayed day by day without resetting data**: earlier-day files must match their loaded manifest checksums and complete raw counts, and Silver decisions must remain unchanged. SCD1 keeps the latest accepted descriptions, while SCD2/inventory retain later interval ends/current flags. New or changed historical inputs and changed validation decisions still require explicit repair; do not delete shared data to bypass these checks.
+
+The DAG now has a daily UTC timetable starting November 9 and `catchup=False`, which is necessary for native backfill. **Unpausing also enables ordinary automatic daily runs**; only the explicit Backfill dialog requests the historical range. Those automatic runs require that day's inputs too.
+
+### Verify results
+
+Fixture totals below describe all 17 supplied files, not every narrower daily range. Use Airflow's native run history for the five run dates/statuses and `evidence/verify_etl_stages.sql` for actual business results. Existing data is never deleted merely to match fixture totals.
+
+`evidence/verify_etl_stages.sql` remains the read-only Snowflake screenshot worksheet for Bronze, Silver/DQ, Gold, reconciliation, SCD1/SCD2, and replay. Use `evidence/scd_evidence_guide.md` for capture order. SQL verifies the final warehouse state; pair it with five successful native backfill runs and daily discovery logs to prove day-by-day execution. Original manifest/STG `BATCH_ID` values remain from the first ingestion during an unchanged backfill replay, even when that was a manual bulk run.
 
 The `reconcile_gold` task executes `include/sql/reconcile/reconcile_gold.sql` and `check_gold_integrity.sql`. For each observed sales date it compares both row counts and net sales amounts:
 
@@ -143,7 +150,7 @@ The second command requires `uv`; alternatively install `requirements-test.txt` 
 
 ## Known limitations
 
-- Date-scoped Silver/Gold publication, complete input-readiness checks, cross-DAG locking, logical batch/day audit, and persisted reconciliation remain incomplete. File ingestion supports date ranges. Per-DAG concurrency is one, but does not protect against a different DAG writing the same tables.
+- Native backfill uses the original DAG and Airflow's run history, not custom locks/audit tables. Do not run standalone layer DAGs or external writers concurrently. Arbitrary historical rebuild/repair is unsupported; reconciliation results are logged rather than persisted.
 - Changed-file versioning and correction workflows are unsupported. Changing validation rules also needs downstream repair: the current Gold MERGE does not remove sales lines that become rejected.
 - Sales keys assume transaction IDs are globally unique. Store-scoped IDs would require a consistent key change across validation, loading, and reconciliation.
 - Some SQL object names remain hardcoded to `RETAIL_DWH`. Structural CSV failures fail the task; there is no separate structural quarantine workflow.
@@ -152,7 +159,7 @@ The second command requires `uv`; alternatively install `requirements-test.txt` 
 ## Project files and evidence
 
 - `dags/full_etl_pipeline/`: controller, standalone DAGs, and Silver publication helper.
-- `dags/full_etl_pipeline/file_selection.py`: date validation, filename filtering, and earlier master dependency selection; covered by `tests/unit/test_file_selection.py`.
+- `dags/full_etl_pipeline/daily_processing.py`: native data-interval date selection and day-scoped Silver/Gold adapters; covered by `tests/unit/test_native_backfill.py`.
 - `include/sql/`: initialization DDL, validation, MERGE, and reconciliation SQL.
 - `tests/`: unit tests, local SQL regression tests, isolated Snowflake test, and fixture expectations.
 - `scripts/validate_retail_dags.py`: DAG structure and configuration checks in Airflow.

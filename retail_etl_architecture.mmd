@@ -4,12 +4,14 @@ flowchart TB
     %% AIRFLOW CONTROLLER - IMPLEMENTED
     %% TaskGroups reuse real tasks, not child DAG triggers.
     %% ===================================
-    subgraph ORCH["AIRFLOW 3.3.2 - MASTER ORCHESTRATION"]
+    ENTRY["Airflow UI: retail_full_etl → Trigger → Backfill<br/>Nov 9–13; Reprocess failed; Max active runs = 1; oldest first<br/>Airflow creates daily runs of the EXISTING pipeline"]
+    subgraph ORCH["AIRFLOW 3.3.2 - ONE DAILY DAG RUN PER BUSINESS DATE"]
         direction LR
-        START["retail_full_etl<br/>Manual trigger; file_limit = 0 by default<br/>Optional start_date and end_date: YYYY-MM-DD<br/>One DAG run; no child-DAG triggers"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
+        START["retail_full_etl - original 13 tasks<br/>Daily UTC data_interval_start supplies business date<br/>Run ID Nov 10 means business date Nov 9<br/>Native past/downstream dependency waits for prior reconciliation"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
         RSTG --> RTMP["run_tmp<br/>Expandable TaskGroup"]
         RTMP --> RTGT["run_gold<br/>Expandable TaskGroup"]
     end
+    ENTRY --> START
 
     %% ===================================
     %% SOURCE DATA - CURRENT TEST FIXTURE
@@ -28,8 +30,8 @@ flowchart TB
     %% ===================================
     subgraph BRONZE["STG - BRONZE | run_stg | Reuses retail_stg_ingestion tasks"]
         direction TB
-        DISC["discover_files<br/>Recognize CSV patterns; all files by default<br/>Optional inclusive start_date / end_date; file_limit = 0<br/>Include latest item/store snapshot on or before start"]
-        SELECTION["File selection contract - inside discover_files<br/>Provide both dates or neither; start must not exceed end<br/>Select all source types within inclusive filename dates<br/>Add earlier item/store dependencies; never substitute future masters<br/>Missing days allowed; no in-range matches fails discovery<br/>Log selected files and additional dependencies"]
+        DISC["discover_files<br/>Native scheduled/backfill: exact data_interval_start date<br/>Manual trigger: original bulk file_limit behavior<br/>Earlier replay: require identical loaded files and complete raw counts"]
+        SELECTION["Daily selection contract<br/>Item, sales, inventory required every date<br/>Store file optional; reuse earlier accepted snapshot<br/>No controller, helper DAG, API connection, or bootstrap workflow"]
         SELECTION -.-> DISC
         MAP["ingest_one.expand<br/>One mapped task per physical file"]
         HASH["Calculate SHA-256 and SOURCE_FILE_ID<br/>Check manifest before loading<br/>Identical loaded file: SKIP<br/>Same filename with changed bytes: FAIL"]
@@ -54,7 +56,7 @@ flowchart TB
     %% TMP - SILVER
     %% Each load_tmp task executes validation AND atomic publication.
     %% ===================================
-    subgraph SILVER["TMP - SILVER | run_tmp | All loaded STG rows, not date-filtered"]
+    subgraph SILVER["TMP - SILVER | run_tmp | Current-day raw scope; prior master reference reads"]
         direction TB
 
         VI["load_tmp_item_master<br/>validate_item_master.sql<br/>Type and master validation + publication"]
@@ -89,7 +91,7 @@ flowchart TB
     %% TGT - GOLD
     %% Arrows in this section retain actual sequential task order.
     %% ===================================
-    subgraph GOLD["TGT - GOLD | run_gold | All accepted TMP history, not date-filtered"]
+    subgraph GOLD["TGT - GOLD | run_gold | Daily writes; history reads and affected interval closures"]
         direction TB
 
         D1[("DIM_SUBCLASS<br/>load_dim_subclass - SCD1 update in place")]
@@ -158,11 +160,12 @@ flowchart TB
         RULES -->|"No: raise error"| BAD
     end
     REC --> RULES
+    OK --> COMPLETE["Airflow records DAG SUCCESS<br/>Next day's discover_files can then proceed<br/>Failed days must be fixed before advancing"]
 
     %% ===================================
     %% OPERATING CONSTRAINTS
     %% ===================================
-    SAFETY["max_active_runs = 1; max_active_tasks = 1<br/>Standalone layer DAGs remain available<br/>Do not run them concurrently with retail_full_etl<br/>Per-DAG limits do not provide cross-DAG locking"]
+    SAFETY["Existing full DAG only; max_active_runs = 1<br/>Also set native Backfill Max active runs = 1; Run backwards OFF<br/>discover_files depends_on_past + wait_for_downstream includes final reconciliation<br/>Daily schedule; catchup=False; unpausing enables automatic daily runs<br/>Do not run standalone layers or external writers concurrently"]
     SAFETY -.-> ORCH
 
     %% ===================================
@@ -176,7 +179,7 @@ flowchart TB
     classDef success fill:#DDF4E5,stroke:#238354,color:#145C37;
     classDef failure fill:#FBE2E2,stroke:#BD4040,color:#7B2020;
 
-    class START,RSTG,RTMP,RTGT,DISC,SELECTION,MAP,HASH,UPLOAD,PUBLISH,VI,VS,VP,VN,CONTRACT,REC implemented;
+    class ENTRY,START,RSTG,RTMP,RTGT,DISC,SELECTION,MAP,HASH,UPLOAD,PUBLISH,VI,VS,VP,VN,CONTRACT,REC,COMPLETE implemented;
     class SI,SS,SP,SN source;
     class STGI,STGS,STGP,STGN,MANIFEST,TI,TS,TP,TN,D1,D2,D3,D4,FS,FI storage;
     class DQ quarantine;

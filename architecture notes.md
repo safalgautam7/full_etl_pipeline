@@ -4,7 +4,13 @@ This guide follows a file from discovery to reporting-ready Snowflake tables. Re
 
 ## 1. Execution model
 
-`retail_full_etl` is a manually triggered Airflow DAG with three sequential TaskGroups:
+**Native backfill:** open `retail_full_etl` → Trigger → Backfill. Select Nov 9–13, set backfill Max active runs to 1, and leave Run backwards off. Airflow creates five runs of this existing DAG; each uses `data_interval_start` to select that day's files and scope Silver/Gold writes. The discovery task's past/downstream dependency includes final reconciliation, preventing the next day's processing until the previous day succeeds. No helper DAG, API connection, custom controller, audit tables, or bootstrap workflow is used.
+
+The DAG has a daily UTC timetable, starting Nov 9, with `catchup=False`. Unpausing enables automatic daily runs as well as explicit native backfill. Manual single-run triggers retain the original bulk behavior; all-history publication statements below refer to manual bulk mode, not scheduled/backfill runs.
+
+Displayed native run IDs use interval-end timestamps: `backfill__2026-11-10...` processes **Nov 9**. The five fixture business dates Nov 9–13 therefore appear under run IDs Nov 10–14. Use Logical Date/Data Interval Start to identify the processed date. Daily task-instance counts are 16/15/16/15/15; a manual 17-file bulk run has 29. This reflects dynamic ingestion mapping, not additional DAG definitions.
+
+`retail_full_etl` contains three sequential TaskGroups, reused unchanged for every daily backfill run:
 
 ```text
 Local CSVs → run_stg (raw ingestion) → run_tmp (validation) → run_gold (dimensions, facts, checks)
@@ -18,7 +24,7 @@ Implemented in `dags/full_etl_pipeline/stg_ingestion.py`:
 
 1. `discover_files` reads the directory from the Airflow filesystem connection `file_con` (normally `/opt/airflow/data`, mounted from local `data/`).
 2. It searches that directory, not subdirectories, for lowercase `.csv` files matching `<source>_YYYYMMDD.csv`. Supported sources are `item_master`, `store_master`, `pos_sales`, and `inventory_snapshot`. Other filenames are ignored; no recognized inputs fails the task. Filename dates are parsed during range selection and checked again during ingestion.
-3. Names are sorted alphabetically. Without a date range, controller parameter `file_limit=0` selects all recognized files; a positive number selects the first N. The standalone ingestion DAG defaults to one file. Optional `start_date` and `end_date` select an inclusive filename-date range; provide both as `YYYY-MM-DD` and set `file_limit=0`. Discovery also includes the latest available item/store snapshot on or before the start, plus in-range snapshots. Extra earlier dependencies are logged. Missing days are allowed; no in-range matches fails discovery. This is not day-by-day processing or an input-completeness check. Selection rules live in `dags/full_etl_pipeline/file_selection.py`; Silver and Gold remain warehouse-wide.
+3. `daily_processing.processing_day()` uses native scheduled/backfill `data_interval_start`, never the wall clock. `select_day_files()` selects only that date's files and requires item/sales/inventory inputs; a store file is optional when an earlier accepted snapshot exists. For manual bulk/standalone runs, names are sorted and `file_limit=0` selects all, a positive limit selects the first N; standalone ingestion defaults to one. Date ranges belong in the native Backfill dialog, not Trigger JSON.
 4. `ingest_one.expand` creates one task per selected filename. Each task computes a SHA-256 of the file bytes and derives stable identities:
 
    ```text
@@ -30,19 +36,11 @@ The data-row number starts at 1 after the header. These identify a physical sour
 
 Before loading, the task checks `CONTROL.FILE_MANIFEST` by filename. An already-loaded file with the same checksum and matching STG row count is skipped. A changed checksum under the same filename fails deliberately. A matching file with an incomplete STG count is reprocessed to insert missing rows.
 
-### Date-range backfill example
+### Native backfill example
 
-Trigger either the controller or standalone ingestion with:
+The Nov 9–13 UI backfill creates five original full-pipeline runs with **4, 3, 4, 3, 3 files** respectively. Only Nov 9 and Nov 11 include store files. Nov 10 reuses the already accepted Nov 9 store snapshot; no prior-date files are inserted into a daily run. A later starting date needs its earlier master dependencies already loaded. Missing inputs fail the day and block later processing. Existing bulk-loaded dates are replayable if the files match their loaded hashes/counts and validation decisions are unchanged; new/changed historical inputs require repair rather than automatic rebuilding.
 
-```json
-{"start_date":"2026-11-10","end_date":"2026-11-13","file_limit":0}
-```
-
-For the supplied fixture, selection returns four item, four sales, four inventory files, and two store snapshots: **14 files**. The November 9 store snapshot is an additional dependency; November 11 is within the range. A master dated exactly on the start is already included and is not added twice. The helper returns both selected filenames and extra dependencies so discovery can log them separately.
-
-Both dates are optional together (omitted or null), but providing only one, an invalid date, a reversed range, or a positive limit with dates fails discovery. Equal dates select one day. Missing dates/sources do not fail a completeness check: if files begin November 10, a November 9–13 request selects the available files. No in-range files fails even if earlier masters exist. Missing applicable masters are not replaced with future snapshots and may cause Silver reference rejections.
-
-The range controls **which local files are offered to ingestion**, not which warehouse rows are retained or processed downstream. Already-loaded files can be skipped, and existing out-of-range data remains available to Silver, Gold, and reconciliation. The manifest is updated automatically; neither manual manifest edits nor changes to test expectations are needed merely to choose another range. Selection tests are in `tests/unit/test_file_selection.py`.
+Daily Silver classification/publication is restricted to that day's raw identities. SCD1 affects only keys observed that day, selecting their latest accepted descriptions so an older replay cannot undo a later rename. Sales facts are date-scoped. SCD2/inventory preparation reads all accepted history to preserve later boundaries on a bulk-loaded target, but MERGEs only versions starting or ending on the run date. An unchanged replay preserves surrogate keys, timestamps, and interval/current state. Daily monetary reconciliation plus global read-only integrity checks finish each run.
 
 ## 3. Bronze: how raw tables are loaded
 
@@ -144,4 +142,4 @@ Checks also cover historical intervals/current versions, historical keys, sales-
 - `include/sql/silver/`: parsing and validation rules; `silver_processing.py`: publication checks and transaction handling.
 - `include/sql/gold/`: history preparation and target MERGEs; `include/sql/ddl/`: TMP/DQ and TGT definitions. STG/schema/stage bootstrap DDL is not supplied; follow `README.md` prerequisites.
 
-**Operational boundaries:** Silver and Gold reread all available warehouse inputs, not just newly discovered files or the current run's rows. Stable identities and conditional MERGEs make unchanged replay a no-op. Do not run standalone layer DAGs concurrently with the controller: per-DAG limits are not cross-DAG locks. Same-name file corrections are unsupported; changing validation rules can also require explicit downstream repair because Gold MERGEs do not automatically delete sales lines newly rejected by Silver.
+**Operational boundaries:** Manual bulk mode reads all available inputs. Native daily runs publish their date's data, with historical reads/affected interval closures allowed. Unchanged replay over an earlier bulk load is supported; changed historical files or Silver/DQ decisions are blocked before publication. Do not run standalone layers or external writers concurrently. Same-name file corrections and automatic downstream removal of sales newly rejected after rule changes remain unsupported.

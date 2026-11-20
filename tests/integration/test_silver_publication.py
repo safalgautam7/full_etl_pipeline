@@ -7,6 +7,7 @@ translated or replaced in production.
 """
 
 import unittest
+from full_etl_pipeline.daily_processing import verify_replay_decisions
 from pathlib import Path
 
 from full_etl_pipeline.silver_processing import (
@@ -115,6 +116,30 @@ class SilverPublicationTests(unittest.TestCase):
                 before = self.snapshot()
                 self.publish(source)
                 self.assertEqual(before, self.snapshot())
+
+    def test_historical_replay_accepts_identical_decisions_and_blocks_rule_changes(self):
+        for source in SOURCES:
+            with self.subTest(source=source):
+                self.append(source, source + "-accepted")
+                self.append(source, source + "-rejected", "TEST_REJECTION")
+                self.publish(source)
+                before = self.snapshot()
+                verify_replay_decisions(self.cursor, self.cfg, source)
+                work = self.cfg["sources"][source]["work"]
+                self.conn.execute(f"UPDATE {work} SET REJECT_REASON='CHANGED_RULE' WHERE REJECT_REASON IS NOT NULL")
+                with self.assertRaisesRegex(RuntimeError, "historical replay would change"):
+                    verify_replay_decisions(self.cursor, self.cfg, source)
+                self.assertEqual(before, self.snapshot())
+
+    def test_historical_replay_blocks_new_decisions_and_reclassification(self):
+        self.append("pos_sales", "accepted")
+        self.publish("pos_sales")
+        before = self.snapshot()
+        work = self.cfg["sources"]["pos_sales"]["work"]
+        self.conn.execute(f"UPDATE {work} SET REJECT_REASON='NEW_REJECTION'")
+        with self.assertRaisesRegex(RuntimeError, "historical replay would change"):
+            verify_replay_decisions(self.cursor, self.cfg, "pos_sales")
+        self.assertEqual(before, self.snapshot())
 
     def test_new_row_is_inserted_once(self):
         self.append("pos_sales", "one")

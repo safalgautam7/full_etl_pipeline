@@ -1,19 +1,15 @@
-"""Run the existing retail tasks in expandable STG, TMP, and Gold groups.
+"""Existing full pipeline with native Airflow daily scheduling/backfill.
 
-The standalone layer DAGs and their ETL logic remain unchanged. Their original
-task-building functions are reused here, so the full graph shows real tasks
-rather than operators that trigger separate DAG runs.
-
-All tasks run under this DAG's run ID (including STG's BATCH_ID). The default
-file_limit=0 processes all recognized files unless an inclusive date range is supplied.
-Do not run standalone layer DAGs concurrently with this DAG: their per-DAG
-concurrency limits do not protect shared Snowflake tables across different DAGs.
+Use the UI Backfill dialog, oldest first, max active runs 1. Each run's
+data interval supplies its business date; no custom controller/API is needed.
+Manual runs retain the original bulk behavior.
 """
 
 from inspect import unwrap
 
 import pendulum
 from airflow.sdk import TaskGroup, dag
+from airflow.timetables.interval import CronDataIntervalTimetable
 
 from full_etl_pipeline.retail_gold_pipeline import retail_gold_pipeline
 from full_etl_pipeline.retail_tmp_processing import retail_tmp_processing
@@ -22,13 +18,13 @@ from full_etl_pipeline.stg_ingestion import retail_stg_ingestion
 
 @dag(
     dag_id="retail_full_etl",
-    start_date=pendulum.datetime(2026, 11, 1, tz="UTC"),
-    schedule=None,
+    start_date=pendulum.datetime(2026, 11, 9, tz="UTC"),
+    schedule=CronDataIntervalTimetable("0 0 * * *", timezone="UTC"),
     catchup=False,
     max_active_runs=1,
     max_active_tasks=1,
     default_args={"retries": 0},
-    params={"file_limit": 0, "start_date": None, "end_date": None},
+    params={"file_limit": 0},
     tags=["retail", "orchestration", "stg-tmp-tgt"],
 )
 def retail_full_etl():
@@ -45,6 +41,14 @@ def retail_full_etl():
         unwrap(retail_gold_pipeline)()
 
     run_stg >> run_tmp >> run_gold
+    # Airflow's built-in past-dependency gate waits for the preceding run's
+    # ingestion AND final reconciliation. The extra edge is transitively true
+    # already; making it direct lets wait_for_downstream gate the whole day.
+    discover = run_stg.children["run_stg.discover_files"]
+    reconcile = run_gold.children["run_gold.reconcile_gold"]
+    discover.depends_on_past = True
+    discover.wait_for_downstream = True
+    discover >> reconcile
 
 
 retail_full_etl()

@@ -9,6 +9,8 @@ from full_etl_pipeline.retail_full_etl import retail_full_etl
 from full_etl_pipeline.retail_gold_pipeline import retail_gold_pipeline
 from full_etl_pipeline.retail_tmp_processing import retail_tmp_processing
 from full_etl_pipeline.stg_ingestion import retail_stg_ingestion
+from airflow.timetables.base import TimeRestriction
+import pendulum
 
 
 def main():
@@ -18,9 +20,12 @@ def main():
     assert len(combined.tasks) == 13, combined.task_ids
     assert set(combined.task_group.children) == {"run_stg", "run_tmp", "run_gold"}
     assert combined.params["file_limit"] == 0
-    assert combined.params["start_date"] is None
-    assert combined.params["end_date"] is None
     assert combined.max_active_runs == combined.max_active_tasks == 1
+    assert combined.start_date.date().isoformat() == "2026-11-09"
+    assert combined.timetable.periodic
+    discover = combined.get_task("run_stg.discover_files")
+    assert discover.depends_on_past and discover.wait_for_downstream
+    assert discover.downstream_task_ids == {"run_stg.ingest_one", "run_gold.reconcile_gold"}
     assert combined.get_task("run_stg.ingest_one").__class__.__name__ == "DecoratedMappedOperator"
     assert combined.get_task("run_stg.ingest_one").downstream_task_ids == {"run_tmp.load_tmp_item_master"}
     assert combined.get_task("run_tmp.load_tmp_inventory_snapshot").downstream_task_ids == {"run_gold.load_dim_subclass"}
@@ -31,9 +36,6 @@ def main():
     ]:
         standalone = factory()
         standalone.validate()
-        if group == "run_stg":
-            assert standalone.params["start_date"] is None
-            assert standalone.params["end_date"] is None
         standalone.check_cycle()
         actual = {task_id.removeprefix(group + ".") for task_id in combined.task_ids if task_id.startswith(group + ".")}
         assert set(standalone.task_ids) == actual
@@ -42,10 +44,25 @@ def main():
             assert original.retries == grouped.retries
             assert original.retry_delay == grouped.retry_delay
             assert original.trigger_rule == grouped.trigger_rule
-            assert {f"{group}.{task_id}" for task_id in original.downstream_task_ids} == {
+            expected = {f"{group}.{task_id}" for task_id in original.downstream_task_ids}
+            actual_downstream = {
                 task_id for task_id in grouped.downstream_task_ids if task_id.startswith(group + ".")
             }
-    print("PASS: 13 task definitions, mapping, layer boundaries, standalone parity, retries, concurrency, and no cycles")
+            assert expected == actual_downstream
+    print("PASS: original 13-task pipeline, native daily timetable, whole-previous-day success gate, layer parity and concurrency")
+    restriction = TimeRestriction(earliest=pendulum.datetime(2026, 11, 9, tz="UTC"),
+                                  latest=pendulum.datetime(2026, 11, 13, tz="UTC"), catchup=True)
+    previous = None
+    dates = []
+    while True:
+        info = combined.timetable.next_dagrun_info(last_automated_data_interval=previous,
+                                                  restriction=restriction)
+        if info is None:
+            break
+        dates.append(info.data_interval.start.date().isoformat())
+        previous = info.data_interval
+    assert dates == [f"2026-11-{day:02d}" for day in range(9, 14)], dates
+    print("PASS: native timetable generates Nov 9, 10, 11, 12, 13 as five daily intervals")
 
 
 if __name__ == "__main__":

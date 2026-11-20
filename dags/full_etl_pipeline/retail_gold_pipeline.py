@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 
 import pendulum
-from airflow.sdk import Variable, dag, task
+from airflow.sdk import Variable, dag, task, get_current_context
 
 OBJECT = re.compile(r"^[A-Z][A-Z0-9_]*(\.[A-Z][A-Z0-9_]*){2}$")
 
@@ -49,6 +49,12 @@ def execute_file(cursor, directory: str, name: str) -> None:
     sql = path.read_text(encoding="utf-8").strip().rstrip(";")
     if not sql:
         raise ValueError(f"Empty SQL file: {path}")
+    context = get_current_context()
+    from full_etl_pipeline.daily_processing import processing_day, scoped_gold_sql
+
+    day = processing_day(context)
+    if day:
+        sql = scoped_gold_sql(sql, name, day)
     print(f"Running SQL: {path.name}")
     cursor.execute(sql)
     print(f"Completed: {path.name}; cursor rowcount={cursor.rowcount}")
