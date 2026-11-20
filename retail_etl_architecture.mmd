@@ -6,7 +6,7 @@ flowchart TB
     %% ===================================
     subgraph ORCH["AIRFLOW 3.3.2 - MASTER ORCHESTRATION"]
         direction LR
-        START["retail_full_etl<br/>Manual trigger; file_limit = 0 by default<br/>One DAG run; no child-DAG triggers"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
+        START["retail_full_etl<br/>Manual trigger; file_limit = 0 by default<br/>Optional start_date and end_date: YYYY-MM-DD<br/>One DAG run; no child-DAG triggers"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
         RSTG --> RTMP["run_tmp<br/>Expandable TaskGroup"]
         RTMP --> RTGT["run_gold<br/>Expandable TaskGroup"]
     end
@@ -28,7 +28,9 @@ flowchart TB
     %% ===================================
     subgraph BRONZE["STG - BRONZE | run_stg | Reuses retail_stg_ingestion tasks"]
         direction TB
-        DISC["discover_files<br/>Recognize CSV patterns<br/>Select all recognized files by default; not date-scoped"]
+        DISC["discover_files<br/>Recognize CSV patterns; all files by default<br/>Optional inclusive start_date / end_date; file_limit = 0<br/>Include latest item/store snapshot on or before start"]
+        SELECTION["File selection contract - inside discover_files<br/>Provide both dates or neither; start must not exceed end<br/>Select all source types within inclusive filename dates<br/>Add earlier item/store dependencies; never substitute future masters<br/>Missing days allowed; no in-range matches fails discovery<br/>Log selected files and additional dependencies"]
+        SELECTION -.-> DISC
         MAP["ingest_one.expand<br/>One mapped task per physical file"]
         HASH["Calculate SHA-256 and SOURCE_FILE_ID<br/>Check manifest before loading<br/>Identical loaded file: SKIP<br/>Same filename with changed bytes: FAIL"]
         UPLOAD["Validate CSV structure; create JSONL with SOURCE_ROW_ID<br/>Snowflake CSV_LANDING<br/>PUT + COPY into load buffer; verify row identities"]
@@ -52,7 +54,7 @@ flowchart TB
     %% TMP - SILVER
     %% Each load_tmp task executes validation AND atomic publication.
     %% ===================================
-    subgraph SILVER["TMP - SILVER | run_tmp | Reuses retail_tmp_processing tasks"]
+    subgraph SILVER["TMP - SILVER | run_tmp | All loaded STG rows, not date-filtered"]
         direction TB
 
         VI["load_tmp_item_master<br/>validate_item_master.sql<br/>Type and master validation + publication"]
@@ -87,7 +89,7 @@ flowchart TB
     %% TGT - GOLD
     %% Arrows in this section retain actual sequential task order.
     %% ===================================
-    subgraph GOLD["TGT - GOLD | run_gold | Reuses retail_gold_pipeline tasks"]
+    subgraph GOLD["TGT - GOLD | run_gold | All accepted TMP history, not date-filtered"]
         direction TB
 
         D1[("DIM_SUBCLASS<br/>load_dim_subclass - SCD1 update in place")]
@@ -162,38 +164,6 @@ flowchart TB
     %% ===================================
     SAFETY["max_active_runs = 1; max_active_tasks = 1<br/>Standalone layer DAGs remain available<br/>Do not run them concurrently with retail_full_etl<br/>Per-DAG limits do not provide cross-DAG locking"]
     SAFETY -.-> ORCH
-    REPAIR["Rule changes require downstream Gold repair<br/>Current Gold MERGE does not remove sales lines that become rejected"]
-    CONTRACT -.-> REPAIR
-
-    %% ===================================
-    %% REMAINING REQUIRED IMPROVEMENTS
-    %% Conditional TMP/DQ MERGE is implemented above, not TODO.
-    %% ===================================
-    subgraph NEXT["REQUIRED IMPROVEMENTS - TODO"]
-        direction TB
-        N2["P2 - Date-scoped backfill<br/>Pass start_date and end_date through TaskGroups<br/>Five consecutive business days"]
-        N3["P2 - Complete file readiness sensors<br/>Timeout on missing required inputs<br/>Use latest applicable store snapshot, never a future snapshot"]
-        N4["P2 - Logical batch tracking and cross-DAG locking<br/>CONTROL.ETL_BATCH; per-day and per-attempt audit<br/>Persist reconciliation results"]
-        N5["P3 - Scoped processing<br/>Limit TMP and Gold publication to batch dates<br/>Verify chronological historical dependency handling"]
-        N6["P5 - Complete Snowflake acceptance and replay evidence<br/>Local unit and SQL regression tests implemented<br/>Opt-in isolated Snowflake Silver test available, not yet run<br/>Verify stable results, SCD keys, history and timestamps"]
-    end
-
-    %% ===================================
-    %% OPTIONAL IMPROVEMENTS
-    %% ===================================
-    subgraph LATER["OPTIONAL FUTURE ENHANCEMENTS"]
-        direction TB
-        O1["Versioned corrected-file handling<br/>Preserve immutable STG history<br/>Compare using business keys<br/>Current policy rejects same-name changed files"]
-        O2["Gold aggregate mart<br/>Daily sales rollups from TGT"]
-    end
-
-    N2 -.-> ORCH
-    N3 -.-> DISC
-    N4 -.-> MANIFEST
-    N5 -.-> GOLD
-    N6 -.-> ACCEPT
-    O1 -.-> MANIFEST
-    FS -.-> O2
 
     %% ===================================
     %% STYLING
@@ -202,16 +172,14 @@ flowchart TB
     classDef source fill:#EAF1FA,stroke:#446B9B,color:#173653;
     classDef storage fill:#EEF1F5,stroke:#637487,color:#273747;
     classDef quarantine fill:#FCE8E8,stroke:#C04A4A,color:#742727;
-    classDef planned fill:#FFF2DB,stroke:#BB8532,color:#63451C,stroke-width:1.5px,stroke-dasharray:5 4;
-    classDef optional fill:#F2F2F2,stroke:#888888,color:#454545,stroke-dasharray:4 4;
+    classDef constraint fill:#F2F2F2,stroke:#888888,color:#454545,stroke-dasharray:4 4;
     classDef success fill:#DDF4E5,stroke:#238354,color:#145C37;
     classDef failure fill:#FBE2E2,stroke:#BD4040,color:#7B2020;
 
-    class START,RSTG,RTMP,RTGT,DISC,MAP,HASH,UPLOAD,PUBLISH,VI,VS,VP,VN,CONTRACT,REC implemented;
+    class START,RSTG,RTMP,RTGT,DISC,SELECTION,MAP,HASH,UPLOAD,PUBLISH,VI,VS,VP,VN,CONTRACT,REC implemented;
     class SI,SS,SP,SN source;
     class STGI,STGS,STGP,STGN,MANIFEST,TI,TS,TP,TN,D1,D2,D3,D4,FS,FI storage;
     class DQ quarantine;
-    class N2,N3,N4,N5,N6 planned;
-    class O1,O2,SAFETY,REPAIR optional;
+    class SAFETY constraint;
     class OK success;
     class BAD failure;

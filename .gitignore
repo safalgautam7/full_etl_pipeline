@@ -8,6 +8,7 @@ __pycache__/
 dist/
 build/
 
+
 # Virtual environment
 venv/
 .env/
@@ -55,3 +56,6 @@ docker-compose.override.yml
 secrets/
 *.txt
 !requirements-test.txt
+
+
+scripts.md

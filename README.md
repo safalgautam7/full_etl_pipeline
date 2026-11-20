@@ -2,7 +2,7 @@
 
 This pipeline loads item master, store master, POS sales, and inventory snapshot CSVs into Snowflake. It preserves raw input, quarantines invalid rows, and builds historical dimensions and facts.
 
-The assignment requires five consecutive business dates in one run. The fixture covers **2026-11-09 through 2026-11-13**: five files each for items, sales, and inventory, plus two store snapshots. All 17 files can run together, but a date-scoped five-day backfill is **not yet supported**.
+The fixture covers **2026-11-09 through 2026-11-13**: five files each for items, sales, and inventory, plus two store snapshots. Load all 17 files or select an inclusive filename-date range with applicable earlier master snapshots.
 
 ## Architecture
 
@@ -19,7 +19,7 @@ CSV files -> run_stg -> run_tmp -> run_gold -> reconciliation
 
 The controller reuses tasks, not child-DAG triggers. Standalone DAGs are `retail_stg_ingestion`, `retail_tmp_processing`, and `retail_gold_pipeline`; `retail_tgt_dimensions` is dimensions-only. **Do not run these concurrently against shared tables.**
 
-Aggregate means Gold roll-ups built from TGT in the assignment terminology. No Aggregate mart is implemented.
+Aggregate means Gold roll-ups built from TGT. No Aggregate mart is implemented.
 
 ## Data quality gates
 
@@ -89,11 +89,27 @@ docker compose exec airflow-scheduler airflow dags unpause retail_full_etl
 docker compose exec airflow-scheduler airflow dags trigger retail_full_etl --conf '{"file_limit": 0}'
 ```
 
-Follow `run_stg`, `run_tmp`, and `run_gold` in the Airflow graph. `file_limit=0` selects every recognized CSV; the standalone ingestion DAG defaults to one file for smoke testing.
+Follow `run_stg`, `run_tmp`, and `run_gold` in the Airflow graph. Without dates, `file_limit=0` selects every recognized CSV; the standalone ingestion DAG defaults to one file for smoke testing. Date-range selection is described below.
 
 ## How to backfill and verify
 
-Place historical files and applicable earlier master snapshots in `data/`, then use the same trigger command. Silver and Gold read all available warehouse input; SQL orders snapshots by business date to derive history. There are no `start_date`/`end_date` parameters or scheduled catchup. Filename sorting is not day-by-day orchestration.
+Place historical files and applicable earlier master snapshots in `data/`, then trigger an inclusive range:
+
+```bash
+docker compose exec airflow-scheduler airflow dags trigger retail_full_etl --conf '{"start_date":"2026-11-10","end_date":"2026-11-13","file_limit":0}'
+```
+
+- Supply both dates as `YYYY-MM-DD`, start on or before end. Omit both (or use JSON null) to retain all-file/limit behavior.
+- Ranges require `file_limit=0`, including standalone `retail_stg_ingestion`, whose default is 1.
+- Discovery selects in-range files and the latest available item/store snapshot on or before the start. Extra earlier dependencies are logged; future snapshots are never substituted.
+- Missing days/sources are allowed; no in-range matches fails discovery. If files begin November 10, requesting November 9–13 selects what exists. Missing applicable masters can cause unknown-reference quarantine.
+- Manifest updates are automatic; already-loaded files are skipped. The one-file-per-source-per-date naming convention is unchanged.
+
+For the supplied fixture, November 10–13 selects **14 files**: four each for item, sales, and inventory, plus the November 9 and November 11 store snapshots. November 9 supplies the initial store reference; November 11 supplies the later change. No November 9 sales or inventory files are selected.
+
+To select a single day, set both dates to that day. In the Airflow UI, pass the same JSON in the trigger configuration. For ingestion only, use the same CLI command with DAG ID `retail_stg_ingestion`; this does not run Silver or Gold.
+
+This scopes **file ingestion only**. Silver and Gold still read all warehouse inputs to derive history. The range does not delete existing data, filter Gold output, or enable scheduled catchup. Filename sorting is not day-by-day orchestration. Fixture totals below apply to the complete fixture, not necessarily to a fresh warehouse loaded with a narrower range.
 
 The `reconcile_gold` task executes `include/sql/reconcile/reconcile_gold.sql` and `check_gold_integrity.sql`. For each observed sales date it compares both row counts and net sales amounts:
 
@@ -127,7 +143,7 @@ The second command requires `uv`; alternatively install `requirements-test.txt` 
 
 ## Known limitations
 
-- Date-scoped processing, complete input-readiness checks, cross-DAG locking, logical batch/day audit, and persisted reconciliation remain incomplete. Per-DAG concurrency is one, but does not protect against a different DAG writing the same tables.
+- Date-scoped Silver/Gold publication, complete input-readiness checks, cross-DAG locking, logical batch/day audit, and persisted reconciliation remain incomplete. File ingestion supports date ranges. Per-DAG concurrency is one, but does not protect against a different DAG writing the same tables.
 - Changed-file versioning and correction workflows are unsupported. Changing validation rules also needs downstream repair: the current Gold MERGE does not remove sales lines that become rejected.
 - Sales keys assume transaction IDs are globally unique. Store-scoped IDs would require a consistent key change across validation, loading, and reconciliation.
 - Some SQL object names remain hardcoded to `RETAIL_DWH`. Structural CSV failures fail the task; there is no separate structural quarantine workflow.
@@ -136,8 +152,10 @@ The second command requires `uv`; alternatively install `requirements-test.txt` 
 ## Project files and evidence
 
 - `dags/full_etl_pipeline/`: controller, standalone DAGs, and Silver publication helper.
+- `dags/full_etl_pipeline/file_selection.py`: date validation, filename filtering, and earlier master dependency selection; covered by `tests/unit/test_file_selection.py`.
 - `include/sql/`: initialization DDL, validation, MERGE, and reconciliation SQL.
 - `tests/`: unit tests, local SQL regression tests, isolated Snowflake test, and fixture expectations.
 - `scripts/validate_retail_dags.py`: DAG structure and configuration checks in Airflow.
 - `evidence/silver_merge_checkpoint.md`: verification status, local test results, and historical run observations. Execution logs are under `logs/dag_id=retail_full_etl/` when retained locally.
 - `retail_etl_architecture.mmd`: architecture diagram; `requirements_and_implementation.md`: assignment contract and remaining work.
+- `architecture notes.md`: developer walkthrough of discovery, intermediate tables, loading, history, and transaction boundaries.

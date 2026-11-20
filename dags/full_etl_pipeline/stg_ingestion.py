@@ -1,6 +1,8 @@
 """ idempotent CSV -> JSONL -> Snowflake STG ingestion.
 Airflow 3.3.2. Manual trigger: {"file_limit": 1} for smoke test,
-{"file_limit": 0} for all CSVs. Config in /opt/airflow/config/retail_etl.json.
+{"file_limit": 0} for all CSVs. Optional start_date/end_date (YYYY-MM-DD)
+select an inclusive filename range and earlier master dependencies; use limit 0.
+Config in /opt/airflow/config/retail_etl.json.
 
 """
 
@@ -10,16 +12,13 @@ import json
 import re
 import tempfile
 from contextlib import closing
-from datetime import datetime
 from pathlib import Path
 
 import pendulum
 from airflow.sdk import dag, get_current_context, task
+from full_etl_pipeline.file_selection import FILE_PATTERN, inspect_filename, select_files
 
 CONFIG_PATH = Path("/opt/airflow/config/retail_etl.json")
-FILE_PATTERN = re.compile(
-    r"^(item_master|store_master|pos_sales|inventory_snapshot)_(\d{8})\.csv$" 
-) #valid dates --> {name}_{name}_{YYYYMMDD}.csv
 # Identifiers are read from external config, but must not allow arbitrary SQL.
 SQL_OBJECT = re.compile(r"^[A-Z][A-Z0-9_]*(\.[A-Z][A-Z0-9_]*){2}$") # to allow execution of 
 
@@ -30,15 +29,6 @@ def settings():
         if not SQL_OBJECT.fullmatch(name):
             raise ValueError(f"Unsafe Snowflake object name in config: {name}")
     return cfg
-
-
-def inspect_filename(filename):
-    match = FILE_PATTERN.fullmatch(filename)
-    if not match:
-        raise ValueError(f"Unexpected CSV name: {filename}")
-    source_type, date_string = match.groups()
-    source_date = datetime.strptime(date_string, "%Y%m%d").date()
-    return source_type, source_date
 
 
 def checksum(path):
@@ -103,7 +93,7 @@ def put_and_check(cursor, local_path, stage_prefix):
     catchup=False,
     max_active_runs=1,
     max_active_tasks=1,  # Serial for initial safety; map creates separate tasks.
-    params={"file_limit": 1},
+    params={"file_limit": 1, "start_date": None, "end_date": None},
     tags=["retail", "stg", "idempotent"],
 )
 def retail_stg_ingestion():
@@ -116,12 +106,12 @@ def retail_stg_ingestion():
         if not root.is_dir():
             raise FileNotFoundError(root)
         names = sorted(p.name for p in root.glob("*.csv") if FILE_PATTERN.fullmatch(p.name))
-        if not names:
-            raise ValueError(f"No recognized CSV inputs under {root}")
-        limit = int(get_current_context()["params"]["file_limit"])
-        if limit < 0:
-            raise ValueError("file_limit must be 0 (all) or a positive number")
-        chosen = names if limit == 0 else names[:limit]
+        params = get_current_context()["params"]
+        chosen, dependencies = select_files(
+            names, params["file_limit"], params.get("start_date"), params.get("end_date")
+        )
+        print(f"Selection range: {params.get('start_date')} to {params.get('end_date')}")
+        print(f"Additional earlier master snapshots: {dependencies}")
         print(f"Discovered {len(names)} recognized files; selecting {len(chosen)}: {chosen}")
         return chosen
 

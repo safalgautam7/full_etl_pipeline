@@ -18,6 +18,8 @@ def main():
     assert len(combined.tasks) == 13, combined.task_ids
     assert set(combined.task_group.children) == {"run_stg", "run_tmp", "run_gold"}
     assert combined.params["file_limit"] == 0
+    assert combined.params["start_date"] is None
+    assert combined.params["end_date"] is None
     assert combined.max_active_runs == combined.max_active_tasks == 1
     assert combined.get_task("run_stg.ingest_one").__class__.__name__ == "DecoratedMappedOperator"
     assert combined.get_task("run_stg.ingest_one").downstream_task_ids == {"run_tmp.load_tmp_item_master"}
@@ -29,6 +31,9 @@ def main():
     ]:
         standalone = factory()
         standalone.validate()
+        if group == "run_stg":
+            assert standalone.params["start_date"] is None
+            assert standalone.params["end_date"] is None
         standalone.check_cycle()
         actual = {task_id.removeprefix(group + ".") for task_id in combined.task_ids if task_id.startswith(group + ".")}
         assert set(standalone.task_ids) == actual
