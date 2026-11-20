@@ -24,7 +24,7 @@ CONFIG = Path('/opt/airflow/config/retail_tmp.json')
     tags=["retail", "gold", "tgt", "scd"],
 )
 def retail_tgt_dimensions():
-    @task(retries = 2)
+    @task(retries=2, pool="retail_writer")
     def run_sql_files(sql_filenames: list[str]) -> None:
         config = json.loads(CONFIG.read_text(encoding="utf-8"))
         conn_id = config["snowflake_conn_id"]
@@ -45,6 +45,18 @@ def retail_tgt_dimensions():
 
                     print(f"Completed {name}; affected rows: {cursor.rowcount}")
 
+    @task(retries=2, pool="retail_writer")
+    def load_dim_date():
+        from full_etl_pipeline.retail_gold_pipeline import get_config
+        from full_etl_pipeline.reporting import load_calendar
+
+        cfg = get_config()
+        with closing(SnowflakeHook(snowflake_conn_id=cfg["snowflake_conn_id"]).get_conn()) as conn:
+            conn.autocommit(True)
+            with closing(conn.cursor()) as cursor:
+                load_calendar(cursor, cfg)
+
+    calendar = load_dim_date()
     subclass = run_sql_files.override(task_id="load_dim_subclass")(
         ["load_dim_subclass.sql"]
     )
@@ -59,7 +71,7 @@ def retail_tgt_dimensions():
     )
 
     # Complete lookup dimensions before assigning related surrogate keys.
-    subclass >> district >> item >> location
+    calendar >> subclass >> district >> item >> location
 
 
 retail_tgt_dimensions()

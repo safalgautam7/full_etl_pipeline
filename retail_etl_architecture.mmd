@@ -7,7 +7,7 @@ flowchart TB
     ENTRY["Airflow UI: retail_full_etl → Trigger → Backfill<br/>Nov 9–13; Reprocess failed; Max active runs = 1; oldest first<br/>Airflow creates daily runs of the EXISTING pipeline"]
     subgraph ORCH["AIRFLOW 3.3.2 - ONE DAILY DAG RUN PER BUSINESS DATE"]
         direction LR
-        START["retail_full_etl - original 13 tasks<br/>Daily UTC data_interval_start supplies business date<br/>Run ID Nov 10 means business date Nov 9<br/>Native past/downstream dependency waits for prior reconciliation"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
+        START["retail_full_etl - 14 tasks<br/>Daily UTC data_interval_start supplies business date<br/>Run ID Nov 10 means business date Nov 9<br/>Native past/downstream dependency waits for prior reconciliation"] --> RSTG["run_stg<br/>Expandable TaskGroup"]
         RSTG --> RTMP["run_tmp<br/>Expandable TaskGroup"]
         RTMP --> RTGT["run_gold<br/>Expandable TaskGroup"]
     end
@@ -94,6 +94,7 @@ flowchart TB
     subgraph GOLD["TGT - GOLD | run_gold | Daily writes; history reads and affected interval closures"]
         direction TB
 
+        DC[("DIM_DATE<br/>Continuous shared calendar; configured full years")]
         D1[("DIM_SUBCLASS<br/>load_dim_subclass - SCD1 update in place")]
         D2[("DIM_DISTRICT<br/>load_dim_district - SCD1 update in place")]
 
@@ -103,11 +104,13 @@ flowchart TB
         FS[("FCT_SALES<br/>load_sales - MERGE accepted sales lines<br/>Historical ITEM_SK / LOCN_SK at sale date")]
 
         FI[("FCT_INVENTORY<br/>load_inventory - Validate daily observations<br/>Historical keys at snapshot date<br/>Change-compressed position history; preserve prior versions")]
+        FD[("FCT_INVENTORY_DAILY<br/>One accepted store/item/date observation<br/>Published by load_inventory; no inferred missing balances")]
 
         REC["reconcile_gold<br/>Daily sales row and amount checks<br/>Historical keys, interval and uniqueness checks<br/>Inventory observation coverage checks<br/>Raise on mismatch; results logged, not persisted"]
 
-        D1 --> D2 --> D3 --> D4
+        DC --> D1 --> D2 --> D3 --> D4
         D4 --> FS --> FI --> REC
+        FI --> FD --> REC
     end
 
     %% ===================================
@@ -116,9 +119,9 @@ flowchart TB
     %% ===================================
     RSTG -.->|"Contains real tasks"| DISC
     RTMP -.->|"Contains real tasks"| VI
-    RTGT -.->|"Contains real tasks"| D1
+    RTGT -.->|"Contains real tasks"| DC
     PUBLISH -->|"All mapped ingest tasks succeed before Silver"| VI
-    VN -->|"Silver TaskGroup succeeds before Gold"| D1
+    VN -->|"Silver TaskGroup succeeds before Gold"| DC
 
     SI --> DISC
     SS --> DISC
@@ -167,6 +170,10 @@ flowchart TB
     %% ===================================
     SAFETY["Existing full DAG only; max_active_runs = 1<br/>Also set native Backfill Max active runs = 1; Run backwards OFF<br/>discover_files depends_on_past + wait_for_downstream includes final reconciliation<br/>Daily schedule; catchup=False; unpausing enables automatic daily runs<br/>Do not run standalone layers or external writers concurrently"]
     SAFETY -.-> ORCH
+    CORR["retail_historical_correction<br/>Approved complete file replacement<br/>Hold one-slot retail_writer pool for whole task<br/>Archive superseded raw/manifest/DQ; replace active STG<br/>Revalidate all history and repair Gold in one DML transaction<br/>Commit only after reconciliation; rollback on failure"]
+    CORR -.-> BRONZE
+    CORR -.-> SILVER
+    CORR -.-> GOLD
 
     %% ===================================
     %% STYLING

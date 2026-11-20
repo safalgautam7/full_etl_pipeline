@@ -9,6 +9,8 @@ from full_etl_pipeline.retail_full_etl import retail_full_etl
 from full_etl_pipeline.retail_gold_pipeline import retail_gold_pipeline
 from full_etl_pipeline.retail_tmp_processing import retail_tmp_processing
 from full_etl_pipeline.stg_ingestion import retail_stg_ingestion
+from full_etl_pipeline.retail_historical_correction import retail_historical_correction
+from full_etl_pipeline.retail_tgt_dimensions import retail_tgt_dimensions
 from airflow.timetables.base import TimeRestriction
 import pendulum
 
@@ -17,7 +19,8 @@ def main():
     combined = retail_full_etl()
     combined.validate()
     combined.check_cycle()
-    assert len(combined.tasks) == 13, combined.task_ids
+    assert len(combined.tasks) == 14, combined.task_ids
+    assert all(task.pool == "retail_writer" for task in combined.tasks)
     assert set(combined.task_group.children) == {"run_stg", "run_tmp", "run_gold"}
     assert combined.params["file_limit"] == 0
     assert combined.max_active_runs == combined.max_active_tasks == 1
@@ -28,7 +31,7 @@ def main():
     assert discover.downstream_task_ids == {"run_stg.ingest_one", "run_gold.reconcile_gold"}
     assert combined.get_task("run_stg.ingest_one").__class__.__name__ == "DecoratedMappedOperator"
     assert combined.get_task("run_stg.ingest_one").downstream_task_ids == {"run_tmp.load_tmp_item_master"}
-    assert combined.get_task("run_tmp.load_tmp_inventory_snapshot").downstream_task_ids == {"run_gold.load_dim_subclass"}
+    assert combined.get_task("run_tmp.load_tmp_inventory_snapshot").downstream_task_ids == {"run_gold.load_dim_date"}
     for group, factory in [
         ("run_stg", retail_stg_ingestion),
         ("run_tmp", retail_tmp_processing),
@@ -49,7 +52,19 @@ def main():
                 task_id for task_id in grouped.downstream_task_ids if task_id.startswith(group + ".")
             }
             assert expected == actual_downstream
-    print("PASS: original 13-task pipeline, native daily timetable, whole-previous-day success gate, layer parity and concurrency")
+    print("PASS: 14-task pipeline, shared writer pool, calendar, native daily timetable and layer parity")
+    correction = retail_historical_correction()
+    correction.validate()
+    correction.check_cycle()
+    assert correction.task_ids == ["replace_file"]
+    assert correction.get_task("replace_file").pool == "retail_writer"
+    assert correction.get_task("replace_file").retries == 0
+    dimensions = retail_tgt_dimensions()
+    dimensions.validate()
+    dimensions.check_cycle()
+    assert "load_dim_date" in dimensions.task_ids
+    assert all(task.pool == "retail_writer" for task in dimensions.tasks)
+    print("PASS: explicit single-task correction and standalone calendar dimension DAG")
     restriction = TimeRestriction(earliest=pendulum.datetime(2026, 11, 9, tz="UTC"),
                                   latest=pendulum.datetime(2026, 11, 18, tz="UTC"), catchup=True)
     previous = None

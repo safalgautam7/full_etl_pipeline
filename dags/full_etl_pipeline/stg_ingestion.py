@@ -97,7 +97,7 @@ def put_and_check(cursor, local_path, stage_prefix):
     tags=["retail", "stg", "idempotent"],
 )
 def retail_stg_ingestion():
-    @task
+    @task(pool="retail_writer")
     def discover_files():
         from airflow.providers.standard.hooks.filesystem import FSHook
 
@@ -134,7 +134,7 @@ def retail_stg_ingestion():
         print(f"Discovered {len(names)} recognized files; selecting {len(chosen)}: {chosen}")
         return chosen
 
-    @task(retries=2)
+    @task(retries=2, pool="retail_writer")
     def ingest_one(filename: str):
         from airflow.providers.standard.hooks.filesystem import FSHook
         from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook

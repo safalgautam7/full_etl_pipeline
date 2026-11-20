@@ -31,7 +31,7 @@ def load_config():
     tags=["retail", "tmp", "silver", "dq"],
 )
 def retail_tmp_processing():
-    @task(retries=2)
+    @task(retries=2, pool="retail_writer")
     def process_source(source: str):
         cfg = load_config()
         hook = SnowflakeHook(snowflake_conn_id=cfg["snowflake_conn_id"])

@@ -1,10 +1,7 @@
-"""Stage 7 | Complete TGT dimensions + facts + reconciliation.
+"""Gold calendar, dimensions, versioned/daily facts and reconciliation.
 
-This edition matches the unnumbered SQL filenames under
-/mnt/d/assignment2.3/include/sql/ as provided in the project tree.
-
-Airflow 3.3.2. Trigger manually AFTER retail_tmp_processing has succeeded.
-The separate STG/TMP DAGs are not yet orchestrated in this learning milestone.
+Reused by retail_full_etl; standalone triggering rebuilds from all accepted
+history. Requires the additive reporting migration and one-slot writer pool.
 """
 
 from contextlib import closing
@@ -33,8 +30,8 @@ def get_config() -> dict:
                 "inventory_work_table"):
         if not OBJECT.fullmatch(cfg[key]):
             raise ValueError(f"Invalid configured Snowflake object: {key}")
-    if len(cfg["dimension_tables"]) != 4:
-        raise ValueError("Expected four configured dimension tables")
+    if len(cfg["dimension_tables"]) != 5 or "RETAIL_DWH.TGT.DIM_DATE" not in cfg["dimension_tables"]:
+        raise ValueError("Expected five configured dimensions including DIM_DATE; update retail_gold_config")
     for name in cfg["dimension_tables"]:
         if not OBJECT.fullmatch(name):
             raise ValueError("Invalid dimension table in configuration")
@@ -69,6 +66,15 @@ def require_no_failure(label: str, stats: tuple, names: tuple) -> None:
         raise RuntimeError(f"{label}: source quality check failed: {actual}")
 
 
+def require_calendar_matches(cursor, table, column):
+    # Only trusted code supplies identifiers. Fail BEFORE publishing facts.
+    cursor.execute(f"SELECT COUNT(*) FROM {table} f WHERE "
+                   f"(SELECT COUNT(*) FROM RETAIL_DWH.TGT.DIM_DATE d "
+                   f"WHERE d.CALENDAR_DATE=f.{column}) <> 1")
+    if int(cursor.fetchone()[0]):
+        raise RuntimeError("Missing/duplicate calendar dates; extend calendar coverage before loading facts")
+
+
 @dag(
     dag_id="retail_gold_pipeline",
     start_date=pendulum.datetime(2026, 11, 1, tz="UTC"),
@@ -79,7 +85,7 @@ def require_no_failure(label: str, stats: tuple, names: tuple) -> None:
     tags=["retail", "gold", "tgt", "facts", "reconciliation"],
 )
 def retail_gold_pipeline():
-    @task(retries=2, retry_delay=timedelta(minutes=1))
+    @task(retries=2, retry_delay=timedelta(minutes=1), pool="retail_writer")
     def load_dimension(sql_names: list[str]) -> None:
         from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
@@ -91,7 +97,18 @@ def retail_gold_pipeline():
                 for name in sql_names:
                     execute_file(cur, cfg["gold_sql_dir"], name)
 
-    @task(retries=2, retry_delay=timedelta(minutes=1))
+    @task(retries=2, pool="retail_writer")
+    def load_dim_date() -> None:
+        from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
+        from full_etl_pipeline.reporting import load_calendar
+
+        cfg = get_config()
+        with closing(SnowflakeHook(snowflake_conn_id=cfg["snowflake_conn_id"]).get_conn()) as conn:
+            conn.autocommit(True)
+            with closing(conn.cursor()) as cur:
+                load_calendar(cur, cfg)
+
+    @task(retries=2, retry_delay=timedelta(minutes=1), pool="retail_writer")
     def load_sales() -> None:
         from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
@@ -102,6 +119,7 @@ def retail_gold_pipeline():
             conn.autocommit(True)
             with closing(conn.cursor()) as cur:
                 execute_file(cur, cfg["gold_sql_dir"], "prepare_fct_sales.sql")
+                require_calendar_matches(cur, work, "SALE_DATE")
                 cur.execute(f"""
                     SELECT COUNT(*), COUNT(DISTINCT SOURCE_ROW_ID),
                            COALESCE(COUNT_IF(ITEM_MATCH_COUNT <> 1),0),
@@ -116,7 +134,7 @@ def retail_gold_pipeline():
                 )
                 execute_file(cur, cfg["gold_sql_dir"], "merge_fct_sales.sql")
 
-    @task(retries=2, retry_delay=timedelta(minutes=1))
+    @task(retries=2, retry_delay=timedelta(minutes=1), pool="retail_writer")
     def load_inventory() -> None:
         from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
@@ -128,7 +146,8 @@ def retail_gold_pipeline():
             conn.autocommit(True)
             with closing(conn.cursor()) as cur:
                 execute_file(cur, cfg["gold_sql_dir"],
-                             "resolve_inventory_observations.sql")
+                              "resolve_inventory_observations.sql")
+                require_calendar_matches(cur, obs, "SNAPSHOT_DATE")
                 # Validate every daily observation *before* compressing it.
                 cur.execute(f"""
                     SELECT COUNT(*), COUNT(DISTINCT SOURCE_ROW_ID),
@@ -160,9 +179,11 @@ def retail_gold_pipeline():
                     raise RuntimeError("Duplicate inventory version start")
                 print("Inventory compressed versions:", version_count)
                 execute_file(cur, cfg["gold_sql_dir"],
-                             "merge_fct_inventory.sql")
+                              "merge_fct_inventory.sql")
+                execute_file(cur, cfg["gold_sql_dir"],
+                             "merge_fct_inventory_daily.sql")
 
-    @task(retries=1)
+    @task(retries=1, pool="retail_writer")
     def reconcile_gold() -> None:
         from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
@@ -192,8 +213,13 @@ def retail_gold_pipeline():
                           if int(failures or 0) != 0]
                 if broken:
                     raise RuntimeError(f"Gold integrity checks failed: {broken}")
+                execute_file(cur, cfg["reconcile_sql_dir"], "check_reporting_integrity.sql")
+                reporting = cur.fetchall()
+                if not reporting or any(int(n or 0) for _, n in reporting):
+                    raise RuntimeError(f"Reporting integrity checks failed: {reporting}")
                 print("GOLD RECONCILIATION PASSED")
 
+    calendar = load_dim_date()
     subclass = load_dimension.override(task_id="load_dim_subclass")(
         ["load_dim_subclass.sql"])
     district = load_dimension.override(task_id="load_dim_district")(
@@ -206,7 +232,7 @@ def retail_gold_pipeline():
     sales = load_sales()
     inventory = load_inventory()
     reconcile = reconcile_gold()
-    subclass >> district >> item >> location >> sales >> inventory >> reconcile
+    calendar >> subclass >> district >> item >> location >> sales >> inventory >> reconcile
 
 
 retail_gold_pipeline()

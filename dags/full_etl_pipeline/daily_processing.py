@@ -157,6 +157,12 @@ def scoped_gold_sql(sql, filename, day):
         if sql.count(anchor) != 3:
             raise RuntimeError("Sales source anchors changed")
         sql = sql.replace(anchor, f"FROM (SELECT * FROM RETAIL_DWH.TMP.POS_SALES WHERE SALE_DATE = {bound}) s")
+    elif filename == "merge_fct_inventory_daily.sql":
+        anchor = "USING RETAIL_DWH.TMP.WORK_INV_OBSERVATIONS s"
+        if sql.count(anchor) != 1:
+            raise RuntimeError("Daily inventory MERGE source anchor changed")
+        sql = sql.replace(anchor, "USING (SELECT * FROM RETAIL_DWH.TMP.WORK_INV_OBSERVATIONS "
+                          f"WHERE SNAPSHOT_DATE = {bound}) s")
     elif filename in ("merge_dim_item.sql", "merge_dim_locn.sql", "merge_fct_inventory.sql"):
         work = {"merge_dim_item.sql": "WORK_DIM_ITEM", "merge_dim_locn.sql": "WORK_DIM_LOCN",
                 "merge_fct_inventory.sql": "WORK_FCT_INVENTORY"}[filename]

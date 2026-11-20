@@ -5,7 +5,10 @@
   "sales_work_table": "RETAIL_DWH.TMP.WORK_FCT_SALES",
   "inventory_observations_table": "RETAIL_DWH.TMP.WORK_INV_OBSERVATIONS",
   "inventory_work_table": "RETAIL_DWH.TMP.WORK_FCT_INVENTORY",
+  "calendar_start": "2020-01-01",
+  "calendar_end": "2035-12-31",
   "dimension_tables": [
+    "RETAIL_DWH.TGT.DIM_DATE",
     "RETAIL_DWH.TGT.DIM_SUBCLASS",
     "RETAIL_DWH.TGT.DIM_DISTRICT",
     "RETAIL_DWH.TGT.DIM_ITEM",
