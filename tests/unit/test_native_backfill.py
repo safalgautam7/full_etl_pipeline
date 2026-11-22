@@ -34,11 +34,11 @@ class NativeBackfillTests(unittest.TestCase):
     def test_each_fixture_date_gets_only_its_own_files(self):
         names = [p.name for p in (ROOT / "data").glob("*.csv")]
         counts = []
-        for day in range(9, 14):
+        for day in range(9, 19):
             selected = select_day_files(names, f"2026-11-{day:02d}")
             counts.append(len(selected))
             self.assertTrue(all(f"202611{day:02d}" in name for name in selected))
-        self.assertEqual(counts, [4, 3, 4, 3, 3])
+        self.assertEqual(counts, [4, 3, 4, 3, 3, 3, 4, 3, 3, 3])
 
     def test_missing_daily_inputs_fail(self):
         with self.assertRaisesRegex(ValueError, "missing required daily inputs"):

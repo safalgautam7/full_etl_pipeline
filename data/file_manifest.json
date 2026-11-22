@@ -1,11 +1,5 @@
 {
-  "version": "selected-17-file-variant",
-  "file_count": 17,
-  "total_rows": 510,
-  "store_snapshot_dates": [
-    "2026-11-09",
-    "2026-11-11"
-  ],
+  "version": "33-file-backfill-edge-cases",
   "files": [
     {
       "file": "inventory_snapshot_20261109.csv",
@@ -38,6 +32,36 @@
       "sha256": "f49464cfd0aa01bb432d76b24c2fb62b2ebf3ee87ef103611848f3b3c52b78b8"
     },
     {
+      "file": "inventory_snapshot_20261114.csv",
+      "business_date": "2026-11-14",
+      "rows": 54,
+      "sha256": "0d43fb05f10732464434cd44cd5aa546b0cb46ba2c82d9c0d7f1025f653537db"
+    },
+    {
+      "file": "inventory_snapshot_20261115.csv",
+      "business_date": "2026-11-15",
+      "rows": 55,
+      "sha256": "a232c3a798caf09c493bb63ed83b503244ed7d9574620dfe9c373a1f58a05fe9"
+    },
+    {
+      "file": "inventory_snapshot_20261116.csv",
+      "business_date": "2026-11-16",
+      "rows": 55,
+      "sha256": "fdb442687dd8f3c993b9212bd100666da3023bccfc7c4fa99f0c9a9168e8f38e"
+    },
+    {
+      "file": "inventory_snapshot_20261117.csv",
+      "business_date": "2026-11-17",
+      "rows": 55,
+      "sha256": "586b87a2803d60ee6bc438e913b6d7eb1bf791f6e613c86a9251125250ed4350"
+    },
+    {
+      "file": "inventory_snapshot_20261118.csv",
+      "business_date": "2026-11-18",
+      "rows": 55,
+      "sha256": "723e87e7d3c4e1b1e9936812d2181faded1f934e519d9130aa08f05e6bdac2db"
+    },
+    {
       "file": "item_master_20261109.csv",
       "business_date": "2026-11-09",
       "rows": 30,
@@ -66,6 +90,36 @@
       "business_date": "2026-11-13",
       "rows": 30,
       "sha256": "e54f4a1e9722a5df406d30dee0bfb5a4a3c13aea74f31eab487c5eb4386c1562"
+    },
+    {
+      "file": "item_master_20261114.csv",
+      "business_date": "2026-11-14",
+      "rows": 43,
+      "sha256": "a9515f9d87b27bb9517ef326a588e0983b113471274c145cbc2b4691cf5f6b7e"
+    },
+    {
+      "file": "item_master_20261115.csv",
+      "business_date": "2026-11-15",
+      "rows": 43,
+      "sha256": "c71cef6f21b3d1464f71aacc85e38057414c59f524ba9d42a3d71cbdcd52d1d8"
+    },
+    {
+      "file": "item_master_20261116.csv",
+      "business_date": "2026-11-16",
+      "rows": 44,
+      "sha256": "c8fddb847922ce5280c5d150366855fa418a13bd19a0e6895539481d1d886d08"
+    },
+    {
+      "file": "item_master_20261117.csv",
+      "business_date": "2026-11-17",
+      "rows": 44,
+      "sha256": "838ab30b89a0e51646f19e3c3e5f725ecbbb398775de4799dff635f75f015aef"
+    },
+    {
+      "file": "item_master_20261118.csv",
+      "business_date": "2026-11-18",
+      "rows": 44,
+      "sha256": "cd889c6b5af7b1bcd5832da5a4d4646726cbef3fff4690c5ae558824ecbb5735"
     },
     {
       "file": "pos_sales_20261109.csv",
@@ -98,6 +152,36 @@
       "sha256": "87abc13e9ebe00ce1537811a983145f010133541bf9fa38792296244a6034041"
     },
     {
+      "file": "pos_sales_20261114.csv",
+      "business_date": "2026-11-14",
+      "rows": 64,
+      "sha256": "8ddb9d8aece803f97c85b9321ce9195146d291099eb022bad304e252790aeaed"
+    },
+    {
+      "file": "pos_sales_20261115.csv",
+      "business_date": "2026-11-15",
+      "rows": 66,
+      "sha256": "981651f122667c9718557c299465e8e72e2c73f776509c506dfd5ada13407c1e"
+    },
+    {
+      "file": "pos_sales_20261116.csv",
+      "business_date": "2026-11-16",
+      "rows": 66,
+      "sha256": "da5f5423575512077e1d0f87f32ce6b3f7253b4ab9791840c3aa16002f6e5526"
+    },
+    {
+      "file": "pos_sales_20261117.csv",
+      "business_date": "2026-11-17",
+      "rows": 66,
+      "sha256": "c684458024afd5419a6cfbaa4e4806c223b3d39527034ef48d621a72520fe377"
+    },
+    {
+      "file": "pos_sales_20261118.csv",
+      "business_date": "2026-11-18",
+      "rows": 66,
+      "sha256": "ce2025c329a910893ee25e5f464d64a5151c6e4036d72c35aff7d90336711c87"
+    },
+    {
       "file": "store_master_20261109.csv",
       "business_date": "2026-11-09",
       "rows": 30,
@@ -108,6 +192,19 @@
       "business_date": "2026-11-11",
       "rows": 30,
       "sha256": "cb2790b194c47899262dbfa696739d42e6b61e0265698b254b939af08de0efd8"
+    },
+    {
+      "file": "store_master_20261115.csv",
+      "business_date": "2026-11-15",
+      "rows": 41,
+      "sha256": "17b32d10ca1691e8d298e7d0a6b3a37765134b649aee2d58f89927dae9f9d5ef"
     }
+  ],
+  "file_count": 33,
+  "total_rows": 1371,
+  "store_snapshot_dates": [
+    "2026-11-09",
+    "2026-11-11",
+    "2026-11-15"
   ]
 }

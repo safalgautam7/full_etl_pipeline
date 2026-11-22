@@ -2,7 +2,7 @@
 
 This pipeline loads item master, store master, POS sales, and inventory snapshot CSVs into Snowflake. It preserves raw input, quarantines invalid rows, and builds historical dimensions and facts.
 
-The fixture covers **2026-11-09 through 2026-11-13**: five files each for items, sales, and inventory, plus two store snapshots. Use native Airflow Backfill to run the complete ETL one date at a time, or a manual single trigger for the original bulk load.
+The fixture covers **2026-11-09 through 2026-11-18**: ten files each for items, sales, and inventory, plus three store snapshots (Nov 9, exceptional update Nov 11, and Nov 15). The original 17 files are unchanged. The 16-file extension contains 41–66 data rows per CSV and exercises existing validation/history rules. See [the backfill test guide](evidence/backfill_extension_guide.md) for ranges, row-level expectations, totals, failure cases, and test limitations. Use native Airflow Backfill to run the complete ETL one date at a time.
 
 ## Architecture
 
@@ -104,7 +104,7 @@ Use the **Backfill option in the Trigger menu** on `retail_full_etl` at `http://
 
 No Trigger JSON date range, new connections, or extra setup SQL is needed. Each run uses `data_interval_start` as its business date. The existing discovery task has `depends_on_past`/`wait_for_downstream`, including a direct dependency on final reconciliation: the next day cannot process until the previous full day succeeds. A failed day must be fixed/retried before later dates can proceed.
 
-**Run-ID dates:** `backfill__2026-11-10T00:00:00+00:00` processes the interval starting **Nov 9**, not Nov 10. For Nov 9–13 the displayed run-ID dates are Nov 10–14. Confirm **Logical Date / Data Interval Start** in the run details. Daily runs have 16 task instances on Nov 9/11 (four files) and 15 on the other days (three files); manual bulk runs over all 17 files have 29 instances.
+**Run-ID dates:** `backfill__2026-11-10T00:00:00+00:00` processes the interval starting **Nov 9**, not Nov 10. For Nov 9–18 the displayed run-ID dates are Nov 10–19. Confirm **Logical Date / Data Interval Start** in the run details. Daily runs have 16 task instances on Nov 9/11/15 (four files) and 15 on the other supplied days (three files); manual bulk runs over all 33 files have 45 instances.
 
 Required item/sales/inventory files must exist each day. Store files are loaded only on their own dates; other days reuse previously accepted store snapshots. Start with Nov 9 to load its initial store master. If starting later, applicable earlier masters must already be loaded. There is no separate bootstrap workflow.
 
@@ -114,7 +114,7 @@ The DAG now has a daily UTC timetable starting November 9 and `catchup=False`, w
 
 ### Verify results
 
-Fixture totals below describe all 17 supplied files, not every narrower daily range. Use Airflow's native run history for the five run dates/statuses and `evidence/verify_etl_stages.sql` for actual business results. Existing data is never deleted merely to match fixture totals.
+Fixture totals below distinguish the original 17-file subset from the complete 33-file fixture; they do not apply to every narrower range. Use Airflow's native run history for daily statuses and the extension guide for per-file verification. The previously referenced `evidence/verify_etl_stages.sql` is absent in this checkout. Existing data is never deleted merely to match fixture totals.
 
 `evidence/verify_etl_stages.sql` remains the read-only Snowflake screenshot worksheet for Bronze, Silver/DQ, Gold, reconciliation, SCD1/SCD2, and replay. Use `evidence/scd_evidence_guide.md` for capture order. SQL verifies the final warehouse state; pair it with five successful native backfill runs and daily discovery logs to prove day-by-day execution. Original manifest/STG `BATCH_ID` values remain from the first ingestion during an unchanged backfill replay, even when that was a manual bulk run.
 
@@ -137,13 +137,13 @@ SELECT SOURCE_TYPE, REASON_CODE, COUNT(*) AS ROWS_REJECTED
 FROM RETAIL_DWH.DQ.QUARANTINE_RECORDS GROUP BY SOURCE_TYPE, REASON_CODE;
 ```
 
-For the supplied fixture only, expected results are 510 STG rows, 505 accepted TMP rows, five rejected sales rows, and 145 Gold sales lines totaling **1566.15**, with **61.70** rejected sales amount. The current inventory design produces 98 versions from 150 accepted daily observations. These are test examples, not runtime assumptions. `tests/fixtures/expected_results.json` is used only by tests.
+For the **original Nov 9–13 subset only**, expected results are 510 STG rows, 505 accepted TMP rows, five rejected sales rows, and 145 Gold sales lines totaling **1566.15**, with **61.70** rejected sales amount. That subset produces 98 inventory versions from 150 accepted daily observations. For the complete Nov 9–18 fixture, local tests expect 1371 STG rows, 1033 accepted TMP rows, 338 rejected rows, and 322 Gold sales lines totaling **2533.20**; see the extension guide for details. These are test examples, not runtime assumptions. `tests/fixtures/expected_results.json` retains the original subset's oracle; `backfill_extension_expected.json` describes each new row. Neither is used at runtime.
 
 Run local checks without Snowflake credentials:
 
 ```bash
 PYTHONPATH=dags python3 -m unittest discover -s tests/unit -v
-PYTHONPATH=dags uv run --with 'duckdb>=1.4,<2' --no-project python -m unittest discover -s tests/integration -v
+PYTHONPATH=dags uv run --with-requirements requirements-test.txt --no-project python -m unittest discover -s tests/integration -v
 ```
 
 The second command requires `uv`; alternatively install `requirements-test.txt` in a test environment. Local SQL tests cover Silver publication and replay, not Snowflake behavior or Gold acceptance. `tests/integration/test_snowflake_silver.py` is opt-in and requires a disposable test database and private connector configuration.

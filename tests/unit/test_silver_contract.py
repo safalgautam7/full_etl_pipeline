@@ -68,7 +68,7 @@ class SilverContractTests(unittest.TestCase):
         import csv
 
         oracle = json.loads((ROOT / "tests/fixtures/expected_results.json").read_text())
-        files = sorted((ROOT / "data").glob("*.csv"))
+        files = sorted(p for p in (ROOT / "data").glob("*.csv") if p.stem[-8:] <= "20261113")
         self.assertEqual(oracle["expected_total_files"], len(files))
         counts = {source: 0 for source in SOURCES}
         for path in files:

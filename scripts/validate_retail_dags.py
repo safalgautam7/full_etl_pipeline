@@ -51,7 +51,7 @@ def main():
             assert expected == actual_downstream
     print("PASS: original 13-task pipeline, native daily timetable, whole-previous-day success gate, layer parity and concurrency")
     restriction = TimeRestriction(earliest=pendulum.datetime(2026, 11, 9, tz="UTC"),
-                                  latest=pendulum.datetime(2026, 11, 13, tz="UTC"), catchup=True)
+                                  latest=pendulum.datetime(2026, 11, 18, tz="UTC"), catchup=True)
     previous = None
     dates = []
     while True:
@@ -61,8 +61,8 @@ def main():
             break
         dates.append(info.data_interval.start.date().isoformat())
         previous = info.data_interval
-    assert dates == [f"2026-11-{day:02d}" for day in range(9, 14)], dates
-    print("PASS: native timetable generates Nov 9, 10, 11, 12, 13 as five daily intervals")
+    assert dates == [f"2026-11-{day:02d}" for day in range(9, 19)], dates
+    print("PASS: native timetable generates Nov 9 through Nov 18 as ten daily intervals")
 
 
 if __name__ == "__main__":
