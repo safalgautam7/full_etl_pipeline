@@ -1,0 +1,4617 @@
+{
+  "item_master_20261114.csv": {
+    "rows": 43,
+    "accepted": 30,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_ITEM_ID": 1,
+      "NULL_ITEM_NAME": 1,
+      "NULL_SUBCLASS_ID": 1,
+      "NULL_SUBCLASS_NAME": 1,
+      "INVALID_IS_ACTIVE": 1,
+      "DUPLICATE_ITEM_SNAPSHOT": 1,
+      "INVALID_LIST_PRICE": 4
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_name",
+        "reason": "NULL_ITEM_NAME"
+      },
+      {
+        "row": 36,
+        "case": "blank_subclass_id",
+        "reason": "NULL_SUBCLASS_ID"
+      },
+      {
+        "row": 37,
+        "case": "blank_subclass_name",
+        "reason": "NULL_SUBCLASS_NAME"
+      },
+      {
+        "row": 38,
+        "case": "invalid_active",
+        "reason": "INVALID_IS_ACTIVE"
+      },
+      {
+        "row": 39,
+        "case": "duplicate_master",
+        "reason": "DUPLICATE_ITEM_SNAPSHOT"
+      },
+      {
+        "row": 40,
+        "case": "invalid_price_",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 41,
+        "case": "invalid_price_abc",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 42,
+        "case": "invalid_price_-0.01",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 43,
+        "case": "rejected_master_not_a_reference",
+        "reason": "INVALID_LIST_PRICE"
+      }
+    ]
+  },
+  "pos_sales_20261114.csv": {
+    "rows": 64,
+    "accepted": 34,
+    "reasons": {
+      "INVALID_SALE_DATE": 3,
+      "NULL_TRANSACTION_ID": 2,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_LINE_NUMBER": 5,
+      "INVALID_QUANTITY": 3,
+      "NEGATIVE_QUANTITY": 1,
+      "ZERO_QUANTITY": 1,
+      "INVALID_UNIT_PRICE": 3,
+      "INVALID_DISCOUNT": 3,
+      "AMOUNT_MISMATCH": 1,
+      "DUPLICATE_SALES_LINE": 1,
+      "UNKNOWN_ITEM_ID": 3,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_transaction_id",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 36,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 37,
+        "case": "invalid_line_",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 38,
+        "case": "invalid_line_0",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 39,
+        "case": "invalid_line_-1",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 40,
+        "case": "invalid_line_1.5",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 41,
+        "case": "invalid_line_abc",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 42,
+        "case": "invalid_quantity_",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 43,
+        "case": "invalid_quantity_abc",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 44,
+        "case": "invalid_quantity_1.5",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 45,
+        "case": "negative_quantity",
+        "reason": "NEGATIVE_QUANTITY"
+      },
+      {
+        "row": 46,
+        "case": "zero_quantity",
+        "reason": "ZERO_QUANTITY"
+      },
+      {
+        "row": 47,
+        "case": "invalid_unit_price_",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 48,
+        "case": "invalid_unit_price_bad",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 49,
+        "case": "invalid_unit_price_-0.01",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 50,
+        "case": "invalid_discount_amount_",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 51,
+        "case": "invalid_discount_amount_bad",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 52,
+        "case": "invalid_discount_amount_-0.01",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 53,
+        "case": "amount_outside_tolerance",
+        "reason": "AMOUNT_MISMATCH"
+      },
+      {
+        "row": 54,
+        "case": "amount_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "free_sale",
+        "reason": null
+      },
+      {
+        "row": 56,
+        "case": "full_discount",
+        "reason": null
+      },
+      {
+        "row": 57,
+        "case": "existing_rule_allows_negative_net",
+        "reason": null
+      },
+      {
+        "row": 58,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 59,
+        "case": "multiple_defects_primary_reason",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 60,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 61,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 62,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 63,
+        "case": "future_then_current_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 64,
+        "case": "future_then_current_store",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ],
+    "raw_amount": "365.03",
+    "accepted_amount": "185.01",
+    "rejected_amount": "180.02"
+  },
+  "inventory_snapshot_20261114.csv": {
+    "rows": 54,
+    "accepted": 32,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_QUANTITY_ON_HAND": 4,
+      "INVALID_UNIT_COST": 3,
+      "INVALID_INVENTORY_VALUE": 3,
+      "INVENTORY_VALUE_MISMATCH": 1,
+      "DUPLICATE_INVENTORY_POSITION": 1,
+      "UNKNOWN_ITEM_ID": 3,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 36,
+        "case": "invalid_quantity_on_hand_",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 37,
+        "case": "invalid_quantity_on_hand_bad",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 38,
+        "case": "invalid_quantity_on_hand_-1",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 39,
+        "case": "invalid_unit_cost_",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 40,
+        "case": "invalid_unit_cost_bad",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 41,
+        "case": "invalid_unit_cost_-1",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 42,
+        "case": "invalid_inventory_value_",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 43,
+        "case": "invalid_inventory_value_bad",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 44,
+        "case": "invalid_inventory_value_-1",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 45,
+        "case": "fractional_quantity",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 46,
+        "case": "value_outside_tolerance",
+        "reason": "INVENTORY_VALUE_MISMATCH"
+      },
+      {
+        "row": 47,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_INVENTORY_POSITION"
+      },
+      {
+        "row": 48,
+        "case": "zero_quantity_and_cost",
+        "reason": null
+      },
+      {
+        "row": 49,
+        "case": "value_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 50,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 51,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 52,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 53,
+        "case": "future_then_current_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 54,
+        "case": "future_then_current_store",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ]
+  },
+  "item_master_20261115.csv": {
+    "rows": 43,
+    "accepted": 30,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_ITEM_ID": 1,
+      "NULL_ITEM_NAME": 1,
+      "NULL_SUBCLASS_ID": 1,
+      "NULL_SUBCLASS_NAME": 1,
+      "INVALID_IS_ACTIVE": 1,
+      "DUPLICATE_ITEM_SNAPSHOT": 1,
+      "INVALID_LIST_PRICE": 4
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_name",
+        "reason": "NULL_ITEM_NAME"
+      },
+      {
+        "row": 36,
+        "case": "blank_subclass_id",
+        "reason": "NULL_SUBCLASS_ID"
+      },
+      {
+        "row": 37,
+        "case": "blank_subclass_name",
+        "reason": "NULL_SUBCLASS_NAME"
+      },
+      {
+        "row": 38,
+        "case": "invalid_active",
+        "reason": "INVALID_IS_ACTIVE"
+      },
+      {
+        "row": 39,
+        "case": "duplicate_master",
+        "reason": "DUPLICATE_ITEM_SNAPSHOT"
+      },
+      {
+        "row": 40,
+        "case": "invalid_price_",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 41,
+        "case": "invalid_price_abc",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 42,
+        "case": "invalid_price_-0.01",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 43,
+        "case": "rejected_master_not_a_reference",
+        "reason": "INVALID_LIST_PRICE"
+      }
+    ]
+  },
+  "store_master_20261115.csv": {
+    "rows": 41,
+    "accepted": 31,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_STORE_ID": 1,
+      "NULL_STORE_NAME": 1,
+      "NULL_DISTRICT_ID": 1,
+      "NULL_DISTRICT_NAME": 1,
+      "INVALID_IS_ACTIVE": 2,
+      "DUPLICATE_STORE_SNAPSHOT": 1
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_store_name",
+        "reason": "NULL_STORE_NAME"
+      },
+      {
+        "row": 36,
+        "case": "blank_district_id",
+        "reason": "NULL_DISTRICT_ID"
+      },
+      {
+        "row": 37,
+        "case": "blank_district_name",
+        "reason": "NULL_DISTRICT_NAME"
+      },
+      {
+        "row": 38,
+        "case": "invalid_active",
+        "reason": "INVALID_IS_ACTIVE"
+      },
+      {
+        "row": 39,
+        "case": "duplicate_master",
+        "reason": "DUPLICATE_STORE_SNAPSHOT"
+      },
+      {
+        "row": 40,
+        "case": "new_store",
+        "reason": null
+      },
+      {
+        "row": 41,
+        "case": "rejected_master_not_a_reference",
+        "reason": "INVALID_IS_ACTIVE"
+      }
+    ]
+  },
+  "pos_sales_20261115.csv": {
+    "rows": 66,
+    "accepted": 35,
+    "reasons": {
+      "INVALID_SALE_DATE": 3,
+      "NULL_TRANSACTION_ID": 2,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_LINE_NUMBER": 5,
+      "INVALID_QUANTITY": 3,
+      "NEGATIVE_QUANTITY": 1,
+      "ZERO_QUANTITY": 1,
+      "INVALID_UNIT_PRICE": 3,
+      "INVALID_DISCOUNT": 3,
+      "AMOUNT_MISMATCH": 1,
+      "DUPLICATE_SALES_LINE": 2,
+      "UNKNOWN_ITEM_ID": 3,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_transaction_id",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 36,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 37,
+        "case": "invalid_line_",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 38,
+        "case": "invalid_line_0",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 39,
+        "case": "invalid_line_-1",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 40,
+        "case": "invalid_line_1.5",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 41,
+        "case": "invalid_line_abc",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 42,
+        "case": "invalid_quantity_",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 43,
+        "case": "invalid_quantity_abc",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 44,
+        "case": "invalid_quantity_1.5",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 45,
+        "case": "negative_quantity",
+        "reason": "NEGATIVE_QUANTITY"
+      },
+      {
+        "row": 46,
+        "case": "zero_quantity",
+        "reason": "ZERO_QUANTITY"
+      },
+      {
+        "row": 47,
+        "case": "invalid_unit_price_",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 48,
+        "case": "invalid_unit_price_bad",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 49,
+        "case": "invalid_unit_price_-0.01",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 50,
+        "case": "invalid_discount_amount_",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 51,
+        "case": "invalid_discount_amount_bad",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 52,
+        "case": "invalid_discount_amount_-0.01",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 53,
+        "case": "amount_outside_tolerance",
+        "reason": "AMOUNT_MISMATCH"
+      },
+      {
+        "row": 54,
+        "case": "amount_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "free_sale",
+        "reason": null
+      },
+      {
+        "row": 56,
+        "case": "full_discount",
+        "reason": null
+      },
+      {
+        "row": 57,
+        "case": "existing_rule_allows_negative_net",
+        "reason": null
+      },
+      {
+        "row": 58,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 59,
+        "case": "cross_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 60,
+        "case": "multiple_defects_primary_reason",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 61,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 62,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 63,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 64,
+        "case": "future_then_current_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 65,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 66,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ],
+    "raw_amount": "377.03",
+    "accepted_amount": "191.01",
+    "rejected_amount": "186.02"
+  },
+  "inventory_snapshot_20261115.csv": {
+    "rows": 55,
+    "accepted": 33,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_QUANTITY_ON_HAND": 4,
+      "INVALID_UNIT_COST": 3,
+      "INVALID_INVENTORY_VALUE": 3,
+      "INVENTORY_VALUE_MISMATCH": 1,
+      "DUPLICATE_INVENTORY_POSITION": 1,
+      "UNKNOWN_ITEM_ID": 3,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 36,
+        "case": "invalid_quantity_on_hand_",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 37,
+        "case": "invalid_quantity_on_hand_bad",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 38,
+        "case": "invalid_quantity_on_hand_-1",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 39,
+        "case": "invalid_unit_cost_",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 40,
+        "case": "invalid_unit_cost_bad",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 41,
+        "case": "invalid_unit_cost_-1",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 42,
+        "case": "invalid_inventory_value_",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 43,
+        "case": "invalid_inventory_value_bad",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 44,
+        "case": "invalid_inventory_value_-1",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 45,
+        "case": "fractional_quantity",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 46,
+        "case": "value_outside_tolerance",
+        "reason": "INVENTORY_VALUE_MISMATCH"
+      },
+      {
+        "row": 47,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_INVENTORY_POSITION"
+      },
+      {
+        "row": 48,
+        "case": "zero_quantity_and_cost",
+        "reason": null
+      },
+      {
+        "row": 49,
+        "case": "value_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 50,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 51,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 52,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 53,
+        "case": "future_then_current_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 54,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ]
+  },
+  "item_master_20261116.csv": {
+    "rows": 44,
+    "accepted": 31,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_ITEM_ID": 1,
+      "NULL_ITEM_NAME": 1,
+      "NULL_SUBCLASS_ID": 1,
+      "NULL_SUBCLASS_NAME": 1,
+      "INVALID_IS_ACTIVE": 1,
+      "DUPLICATE_ITEM_SNAPSHOT": 1,
+      "INVALID_LIST_PRICE": 4
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_name",
+        "reason": "NULL_ITEM_NAME"
+      },
+      {
+        "row": 36,
+        "case": "blank_subclass_id",
+        "reason": "NULL_SUBCLASS_ID"
+      },
+      {
+        "row": 37,
+        "case": "blank_subclass_name",
+        "reason": "NULL_SUBCLASS_NAME"
+      },
+      {
+        "row": 38,
+        "case": "invalid_active",
+        "reason": "INVALID_IS_ACTIVE"
+      },
+      {
+        "row": 39,
+        "case": "duplicate_master",
+        "reason": "DUPLICATE_ITEM_SNAPSHOT"
+      },
+      {
+        "row": 40,
+        "case": "invalid_price_",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 41,
+        "case": "invalid_price_abc",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 42,
+        "case": "invalid_price_-0.01",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 43,
+        "case": "new_item",
+        "reason": null
+      },
+      {
+        "row": 44,
+        "case": "rejected_master_not_a_reference",
+        "reason": "INVALID_LIST_PRICE"
+      }
+    ]
+  },
+  "pos_sales_20261116.csv": {
+    "rows": 66,
+    "accepted": 36,
+    "reasons": {
+      "INVALID_SALE_DATE": 3,
+      "NULL_TRANSACTION_ID": 2,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_LINE_NUMBER": 5,
+      "INVALID_QUANTITY": 3,
+      "NEGATIVE_QUANTITY": 1,
+      "ZERO_QUANTITY": 1,
+      "INVALID_UNIT_PRICE": 3,
+      "INVALID_DISCOUNT": 3,
+      "AMOUNT_MISMATCH": 1,
+      "DUPLICATE_SALES_LINE": 2,
+      "UNKNOWN_ITEM_ID": 2,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_transaction_id",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 36,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 37,
+        "case": "invalid_line_",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 38,
+        "case": "invalid_line_0",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 39,
+        "case": "invalid_line_-1",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 40,
+        "case": "invalid_line_1.5",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 41,
+        "case": "invalid_line_abc",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 42,
+        "case": "invalid_quantity_",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 43,
+        "case": "invalid_quantity_abc",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 44,
+        "case": "invalid_quantity_1.5",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 45,
+        "case": "negative_quantity",
+        "reason": "NEGATIVE_QUANTITY"
+      },
+      {
+        "row": 46,
+        "case": "zero_quantity",
+        "reason": "ZERO_QUANTITY"
+      },
+      {
+        "row": 47,
+        "case": "invalid_unit_price_",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 48,
+        "case": "invalid_unit_price_bad",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 49,
+        "case": "invalid_unit_price_-0.01",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 50,
+        "case": "invalid_discount_amount_",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 51,
+        "case": "invalid_discount_amount_bad",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 52,
+        "case": "invalid_discount_amount_-0.01",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 53,
+        "case": "amount_outside_tolerance",
+        "reason": "AMOUNT_MISMATCH"
+      },
+      {
+        "row": 54,
+        "case": "amount_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "free_sale",
+        "reason": null
+      },
+      {
+        "row": 56,
+        "case": "full_discount",
+        "reason": null
+      },
+      {
+        "row": 57,
+        "case": "existing_rule_allows_negative_net",
+        "reason": null
+      },
+      {
+        "row": 58,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 59,
+        "case": "cross_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 60,
+        "case": "multiple_defects_primary_reason",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 61,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 62,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 63,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 64,
+        "case": "future_then_current_item",
+        "reason": null
+      },
+      {
+        "row": 65,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 66,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ],
+    "raw_amount": "377.03",
+    "accepted_amount": "197.01",
+    "rejected_amount": "180.02"
+  },
+  "inventory_snapshot_20261116.csv": {
+    "rows": 55,
+    "accepted": 34,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_QUANTITY_ON_HAND": 4,
+      "INVALID_UNIT_COST": 3,
+      "INVALID_INVENTORY_VALUE": 3,
+      "INVENTORY_VALUE_MISMATCH": 1,
+      "DUPLICATE_INVENTORY_POSITION": 1,
+      "UNKNOWN_ITEM_ID": 2,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 36,
+        "case": "invalid_quantity_on_hand_",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 37,
+        "case": "invalid_quantity_on_hand_bad",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 38,
+        "case": "invalid_quantity_on_hand_-1",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 39,
+        "case": "invalid_unit_cost_",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 40,
+        "case": "invalid_unit_cost_bad",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 41,
+        "case": "invalid_unit_cost_-1",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 42,
+        "case": "invalid_inventory_value_",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 43,
+        "case": "invalid_inventory_value_bad",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 44,
+        "case": "invalid_inventory_value_-1",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 45,
+        "case": "fractional_quantity",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 46,
+        "case": "value_outside_tolerance",
+        "reason": "INVENTORY_VALUE_MISMATCH"
+      },
+      {
+        "row": 47,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_INVENTORY_POSITION"
+      },
+      {
+        "row": 48,
+        "case": "zero_quantity_and_cost",
+        "reason": null
+      },
+      {
+        "row": 49,
+        "case": "value_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 50,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 51,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 52,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 53,
+        "case": "future_then_current_item",
+        "reason": null
+      },
+      {
+        "row": 54,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ]
+  },
+  "item_master_20261117.csv": {
+    "rows": 44,
+    "accepted": 31,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_ITEM_ID": 1,
+      "NULL_ITEM_NAME": 1,
+      "NULL_SUBCLASS_ID": 1,
+      "NULL_SUBCLASS_NAME": 1,
+      "INVALID_IS_ACTIVE": 1,
+      "DUPLICATE_ITEM_SNAPSHOT": 1,
+      "INVALID_LIST_PRICE": 4
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_name",
+        "reason": "NULL_ITEM_NAME"
+      },
+      {
+        "row": 36,
+        "case": "blank_subclass_id",
+        "reason": "NULL_SUBCLASS_ID"
+      },
+      {
+        "row": 37,
+        "case": "blank_subclass_name",
+        "reason": "NULL_SUBCLASS_NAME"
+      },
+      {
+        "row": 38,
+        "case": "invalid_active",
+        "reason": "INVALID_IS_ACTIVE"
+      },
+      {
+        "row": 39,
+        "case": "duplicate_master",
+        "reason": "DUPLICATE_ITEM_SNAPSHOT"
+      },
+      {
+        "row": 40,
+        "case": "invalid_price_",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 41,
+        "case": "invalid_price_abc",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 42,
+        "case": "invalid_price_-0.01",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 43,
+        "case": "new_item",
+        "reason": null
+      },
+      {
+        "row": 44,
+        "case": "rejected_master_not_a_reference",
+        "reason": "INVALID_LIST_PRICE"
+      }
+    ]
+  },
+  "pos_sales_20261117.csv": {
+    "rows": 66,
+    "accepted": 36,
+    "reasons": {
+      "INVALID_SALE_DATE": 3,
+      "NULL_TRANSACTION_ID": 2,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_LINE_NUMBER": 5,
+      "INVALID_QUANTITY": 3,
+      "NEGATIVE_QUANTITY": 1,
+      "ZERO_QUANTITY": 1,
+      "INVALID_UNIT_PRICE": 3,
+      "INVALID_DISCOUNT": 3,
+      "AMOUNT_MISMATCH": 1,
+      "DUPLICATE_SALES_LINE": 2,
+      "UNKNOWN_ITEM_ID": 2,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_transaction_id",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 36,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 37,
+        "case": "invalid_line_",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 38,
+        "case": "invalid_line_0",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 39,
+        "case": "invalid_line_-1",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 40,
+        "case": "invalid_line_1.5",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 41,
+        "case": "invalid_line_abc",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 42,
+        "case": "invalid_quantity_",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 43,
+        "case": "invalid_quantity_abc",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 44,
+        "case": "invalid_quantity_1.5",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 45,
+        "case": "negative_quantity",
+        "reason": "NEGATIVE_QUANTITY"
+      },
+      {
+        "row": 46,
+        "case": "zero_quantity",
+        "reason": "ZERO_QUANTITY"
+      },
+      {
+        "row": 47,
+        "case": "invalid_unit_price_",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 48,
+        "case": "invalid_unit_price_bad",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 49,
+        "case": "invalid_unit_price_-0.01",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 50,
+        "case": "invalid_discount_amount_",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 51,
+        "case": "invalid_discount_amount_bad",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 52,
+        "case": "invalid_discount_amount_-0.01",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 53,
+        "case": "amount_outside_tolerance",
+        "reason": "AMOUNT_MISMATCH"
+      },
+      {
+        "row": 54,
+        "case": "amount_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "free_sale",
+        "reason": null
+      },
+      {
+        "row": 56,
+        "case": "full_discount",
+        "reason": null
+      },
+      {
+        "row": 57,
+        "case": "existing_rule_allows_negative_net",
+        "reason": null
+      },
+      {
+        "row": 58,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 59,
+        "case": "cross_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 60,
+        "case": "multiple_defects_primary_reason",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 61,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 62,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 63,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 64,
+        "case": "future_then_current_item",
+        "reason": null
+      },
+      {
+        "row": 65,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 66,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ],
+    "raw_amount": "377.03",
+    "accepted_amount": "197.01",
+    "rejected_amount": "180.02"
+  },
+  "inventory_snapshot_20261117.csv": {
+    "rows": 55,
+    "accepted": 34,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_QUANTITY_ON_HAND": 4,
+      "INVALID_UNIT_COST": 3,
+      "INVALID_INVENTORY_VALUE": 3,
+      "INVENTORY_VALUE_MISMATCH": 1,
+      "DUPLICATE_INVENTORY_POSITION": 1,
+      "UNKNOWN_ITEM_ID": 2,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 36,
+        "case": "invalid_quantity_on_hand_",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 37,
+        "case": "invalid_quantity_on_hand_bad",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 38,
+        "case": "invalid_quantity_on_hand_-1",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 39,
+        "case": "invalid_unit_cost_",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 40,
+        "case": "invalid_unit_cost_bad",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 41,
+        "case": "invalid_unit_cost_-1",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 42,
+        "case": "invalid_inventory_value_",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 43,
+        "case": "invalid_inventory_value_bad",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 44,
+        "case": "invalid_inventory_value_-1",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 45,
+        "case": "fractional_quantity",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 46,
+        "case": "value_outside_tolerance",
+        "reason": "INVENTORY_VALUE_MISMATCH"
+      },
+      {
+        "row": 47,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_INVENTORY_POSITION"
+      },
+      {
+        "row": 48,
+        "case": "zero_quantity_and_cost",
+        "reason": null
+      },
+      {
+        "row": 49,
+        "case": "value_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 50,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 51,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 52,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 53,
+        "case": "future_then_current_item",
+        "reason": null
+      },
+      {
+        "row": 54,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ]
+  },
+  "item_master_20261118.csv": {
+    "rows": 44,
+    "accepted": 31,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_ITEM_ID": 1,
+      "NULL_ITEM_NAME": 1,
+      "NULL_SUBCLASS_ID": 1,
+      "NULL_SUBCLASS_NAME": 1,
+      "INVALID_IS_ACTIVE": 1,
+      "DUPLICATE_ITEM_SNAPSHOT": 1,
+      "INVALID_LIST_PRICE": 4
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_name",
+        "reason": "NULL_ITEM_NAME"
+      },
+      {
+        "row": 36,
+        "case": "blank_subclass_id",
+        "reason": "NULL_SUBCLASS_ID"
+      },
+      {
+        "row": 37,
+        "case": "blank_subclass_name",
+        "reason": "NULL_SUBCLASS_NAME"
+      },
+      {
+        "row": 38,
+        "case": "invalid_active",
+        "reason": "INVALID_IS_ACTIVE"
+      },
+      {
+        "row": 39,
+        "case": "duplicate_master",
+        "reason": "DUPLICATE_ITEM_SNAPSHOT"
+      },
+      {
+        "row": 40,
+        "case": "invalid_price_",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 41,
+        "case": "invalid_price_abc",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 42,
+        "case": "invalid_price_-0.01",
+        "reason": "INVALID_LIST_PRICE"
+      },
+      {
+        "row": 43,
+        "case": "new_item",
+        "reason": null
+      },
+      {
+        "row": 44,
+        "case": "rejected_master_not_a_reference",
+        "reason": "INVALID_LIST_PRICE"
+      }
+    ]
+  },
+  "pos_sales_20261118.csv": {
+    "rows": 66,
+    "accepted": 36,
+    "reasons": {
+      "INVALID_SALE_DATE": 3,
+      "NULL_TRANSACTION_ID": 2,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_LINE_NUMBER": 5,
+      "INVALID_QUANTITY": 3,
+      "NEGATIVE_QUANTITY": 1,
+      "ZERO_QUANTITY": 1,
+      "INVALID_UNIT_PRICE": 3,
+      "INVALID_DISCOUNT": 3,
+      "AMOUNT_MISMATCH": 1,
+      "DUPLICATE_SALES_LINE": 2,
+      "UNKNOWN_ITEM_ID": 2,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SALE_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_transaction_id",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 36,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 37,
+        "case": "invalid_line_",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 38,
+        "case": "invalid_line_0",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 39,
+        "case": "invalid_line_-1",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 40,
+        "case": "invalid_line_1.5",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 41,
+        "case": "invalid_line_abc",
+        "reason": "INVALID_LINE_NUMBER"
+      },
+      {
+        "row": 42,
+        "case": "invalid_quantity_",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 43,
+        "case": "invalid_quantity_abc",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 44,
+        "case": "invalid_quantity_1.5",
+        "reason": "INVALID_QUANTITY"
+      },
+      {
+        "row": 45,
+        "case": "negative_quantity",
+        "reason": "NEGATIVE_QUANTITY"
+      },
+      {
+        "row": 46,
+        "case": "zero_quantity",
+        "reason": "ZERO_QUANTITY"
+      },
+      {
+        "row": 47,
+        "case": "invalid_unit_price_",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 48,
+        "case": "invalid_unit_price_bad",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 49,
+        "case": "invalid_unit_price_-0.01",
+        "reason": "INVALID_UNIT_PRICE"
+      },
+      {
+        "row": 50,
+        "case": "invalid_discount_amount_",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 51,
+        "case": "invalid_discount_amount_bad",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 52,
+        "case": "invalid_discount_amount_-0.01",
+        "reason": "INVALID_DISCOUNT"
+      },
+      {
+        "row": 53,
+        "case": "amount_outside_tolerance",
+        "reason": "AMOUNT_MISMATCH"
+      },
+      {
+        "row": 54,
+        "case": "amount_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "free_sale",
+        "reason": null
+      },
+      {
+        "row": 56,
+        "case": "full_discount",
+        "reason": null
+      },
+      {
+        "row": 57,
+        "case": "existing_rule_allows_negative_net",
+        "reason": null
+      },
+      {
+        "row": 58,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 59,
+        "case": "cross_day_duplicate",
+        "reason": "DUPLICATE_SALES_LINE"
+      },
+      {
+        "row": 60,
+        "case": "multiple_defects_primary_reason",
+        "reason": "NULL_TRANSACTION_ID"
+      },
+      {
+        "row": 61,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 62,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 63,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 64,
+        "case": "future_then_current_item",
+        "reason": null
+      },
+      {
+        "row": 65,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 66,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ],
+    "raw_amount": "377.03",
+    "accepted_amount": "197.01",
+    "rejected_amount": "180.02"
+  },
+  "inventory_snapshot_20261118.csv": {
+    "rows": 55,
+    "accepted": 34,
+    "reasons": {
+      "INVALID_SNAPSHOT_DATE": 3,
+      "NULL_STORE_ID": 1,
+      "NULL_ITEM_ID": 1,
+      "INVALID_QUANTITY_ON_HAND": 4,
+      "INVALID_UNIT_COST": 3,
+      "INVALID_INVENTORY_VALUE": 3,
+      "INVENTORY_VALUE_MISMATCH": 1,
+      "DUPLICATE_INVENTORY_POSITION": 1,
+      "UNKNOWN_ITEM_ID": 2,
+      "UNKNOWN_STORE_ID": 2
+    },
+    "cases": [
+      {
+        "row": 1,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 2,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 3,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 4,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 5,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 6,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 7,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 8,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 9,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 10,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 11,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 12,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 13,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 14,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 15,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 16,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 17,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 18,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 19,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 20,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 21,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 22,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 23,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 24,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 25,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 26,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 27,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 28,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 29,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 30,
+        "case": "baseline_history_and_normalization",
+        "reason": null
+      },
+      {
+        "row": 31,
+        "case": "unparseable_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 32,
+        "case": "mismatched_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 33,
+        "case": "blank_business_date",
+        "reason": "INVALID_SNAPSHOT_DATE"
+      },
+      {
+        "row": 34,
+        "case": "blank_store_id",
+        "reason": "NULL_STORE_ID"
+      },
+      {
+        "row": 35,
+        "case": "blank_item_id",
+        "reason": "NULL_ITEM_ID"
+      },
+      {
+        "row": 36,
+        "case": "invalid_quantity_on_hand_",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 37,
+        "case": "invalid_quantity_on_hand_bad",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 38,
+        "case": "invalid_quantity_on_hand_-1",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 39,
+        "case": "invalid_unit_cost_",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 40,
+        "case": "invalid_unit_cost_bad",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 41,
+        "case": "invalid_unit_cost_-1",
+        "reason": "INVALID_UNIT_COST"
+      },
+      {
+        "row": 42,
+        "case": "invalid_inventory_value_",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 43,
+        "case": "invalid_inventory_value_bad",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 44,
+        "case": "invalid_inventory_value_-1",
+        "reason": "INVALID_INVENTORY_VALUE"
+      },
+      {
+        "row": 45,
+        "case": "fractional_quantity",
+        "reason": "INVALID_QUANTITY_ON_HAND"
+      },
+      {
+        "row": 46,
+        "case": "value_outside_tolerance",
+        "reason": "INVENTORY_VALUE_MISMATCH"
+      },
+      {
+        "row": 47,
+        "case": "same_day_duplicate",
+        "reason": "DUPLICATE_INVENTORY_POSITION"
+      },
+      {
+        "row": 48,
+        "case": "zero_quantity_and_cost",
+        "reason": null
+      },
+      {
+        "row": 49,
+        "case": "value_at_tolerance",
+        "reason": null
+      },
+      {
+        "row": 50,
+        "case": "unknown_item",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 51,
+        "case": "unknown_store",
+        "reason": "UNKNOWN_STORE_ID"
+      },
+      {
+        "row": 52,
+        "case": "rejected_item_reference",
+        "reason": "UNKNOWN_ITEM_ID"
+      },
+      {
+        "row": 53,
+        "case": "future_then_current_item",
+        "reason": null
+      },
+      {
+        "row": 54,
+        "case": "future_then_current_store",
+        "reason": null
+      },
+      {
+        "row": 55,
+        "case": "rejected_store_reference",
+        "reason": "UNKNOWN_STORE_ID"
+      }
+    ]
+  }
+}
