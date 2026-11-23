@@ -1,0 +1,35 @@
+Object,Layer,Format,Partitioning,Load Pattern
+item_master_yyyymmdd.csv,Source,CSV,column,full
+pos_sales_yyyymmdd.csv,Source,CSV,column,full
+store_master_yyyymmdd.csv,Source,CSV,column,full
+inventory_master_yyyymmdd.csv,Source,CSV,column,full
+price_master_yyyymmdd.csv,Source,CSV,column,full
+STG_itemmaster,Bronze,Table,column,delta(according to ingest date)
+STG_possales,Bronze,Table,column,delta(according to ingest date)
+STG_storemaster,Bronze,Table,column,delta(according to ingest date)
+STG_inventorymaster,Bronze,Table,column,delta(according to ingest date)
+STG_pricemaster,Bronze,Table,column,delta(according to ingest date)
+TMP_itemmaster,Silver,Table,column,delta (according to checks and deduplication tests)
+TMP_possales,Silver,Table,column,delta (according to checks and deduplication tests)
+TMP_storemaster,Silver,Table,column,delta (according to checks and deduplication tests)
+TMP_inventorymaster,Silver,Table,column,delta (according to checks and deduplication tests)
+TMP_pricemaster,Silver,Table,column,delta (according to checks and deduplication tests)
+REJ_TABLE,Silver,Table,column,delta (according to checks and deduplication tests)
+DIM_DAY,Gold,Table,column,Seed
+DIM_WEEK,Gold,Table,column,Seed
+DIM_MONTH,Gold,Table,column,Seed
+DIM_QUARTER,Gold,Table,column,Seed
+DIM_YEAR,Gold,Table,column,Seed
+DIM_ITEM,Gold,Table,column,delta
+DIM_CLASS,Gold,Table,column,delta
+DIM_DEPARTMENT,Gold,Table,column,delta
+DIM_COMPANY,Gold,Table,column,delta
+DIM_LOCATION,Gold,Table,column,delta
+DIM_DISTRICT,Gold,Table,column,delta
+DIM_STATE,Gold,Table,column,delta
+DIM_CUSTOMER,Gold,Table,column,delta
+FCT_SALES,Gold,Table,column,delta
+FCT_PRICE,Gold,Table,column,delta
+FCT_INVENTORY,Gold,Table,column,delta
+FCT_SALES_PER_WEEK,Gold,Table,column,delta
+Batch Log,Gold,Table,column,delta
