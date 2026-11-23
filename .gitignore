@@ -57,5 +57,4 @@ secrets/
 *.txt
 !requirements-test.txt
 
-# Private presentation guide; keep local and out of GitHub.
 scripts.md
