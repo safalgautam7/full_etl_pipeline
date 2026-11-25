@@ -81,6 +81,8 @@ class SilverPublicationTests(unittest.TestCase):
             "SNAPSHOT_DATE": "2026-11-09", "SALE_DATE": "2026-11-09",
             "ITEM_ID": "ITEM001", "ITEM_NAME": "Example", "SUBCLASS_ID": "SC01", "SUBCLASS_NAME": "Subclass",
             "BRAND": None, "UNIT_OF_MEASURE": "EA", "LIST_PRICE": "10.00", "IS_ACTIVE": True,
+            "DEPARTMENT_ID": "DEP01", "DEPARTMENT_NAME": "Food & Grocery",
+            "CLASS_ID": "CLS01", "CLASS_NAME": "Bakery & Breakfast", "LOCATION_TYPE": "Supermarket",
             "STORE_ID": "STORE001", "STORE_NAME": "Store", "DISTRICT_ID": "DIST01", "DISTRICT_NAME": "District",
             "CITY": None, "REGION": "North", "TRANSACTION_ID": row_id, "LINE_NUMBER": 1,
             "QUANTITY": 2, "UNIT_PRICE": "10.00", "DISCOUNT_AMOUNT": "1.00", "NET_SALES": "19.00",

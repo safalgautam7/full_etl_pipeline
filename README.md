@@ -8,6 +8,14 @@ warehouse**, not just an already configured developer machine.
 For internals and design decisions, read [architecture notes.md](architecture%20notes.md)
 and [the Mermaid diagram](retail_etl_architecture.mmd).
 
+**Sales-dashboard upgrade:** inputs now include synthetic history from
+2024-11-09 to 2026-11-18 (2,328 CSVs), Department/Class and Location Type.
+The dedicated four-view star is `RETAIL_DWH.MART_SALES`. See the
+[sales-mart/reload guide](evidence/sales_reporting_reload.md) for DDL, backups,
+reset safeguards, full-history totals, ISO PY rules and Power BI import.
+Older 33-file counts below describe the original November subset, not the
+expanded source folder.
+
 ## 1. What you will run
 
 ```text
@@ -102,6 +110,8 @@ execute the following repository files **in this exact order**:
 | 4 | [create_tgt_dimensions.sql](include/sql/ddl/create_tgt_dimensions.sql) | Four business dimensions |
 | 5 | [create_tgt_facts.sql](include/sql/ddl/create_tgt_facts.sql) | Sales and versioned inventory |
 | 6 | [create_reporting_correction_tables.sql](include/sql/ddl/create_reporting_correction_tables.sql) | Calendar, daily inventory and correction audit/archive tables |
+| 7 | [02_sales_reporting_attributes.sql](include/sql/ddl/02_sales_reporting_attributes.sql) | Additive Department/Class/Location Type migration |
+| 8 | [03_create_sales_mart.sql](include/sql/ddl/03_create_sales_mart.sql) | Four reporting views in MART_SALES |
 
 **Review the role/warehouse before executing.** The lab defaults are
 `SYSADMIN`, `SNOWFLAKE_LEARNING_WH`, and database `RETAIL_DWH`. Some statements
@@ -110,8 +120,9 @@ warehouse, update those statements and the Airflow connection consistently.
 Creating/resuming a warehouse incurs Snowflake charges. `AUTO_SUSPEND=60`
 limits idle time on a newly created lab warehouse.
 
-All creation statements use `IF NOT EXISTS`; they do not truncate or replace
-populated objects. They also do **not** migrate an existing incompatible schema.
+Base creation uses `IF NOT EXISTS` and does not truncate or replace populated
+tables. Attribute migration is additive; the mart script replaces view
+definitions, not source data. Base creation does **not** migrate incompatible schemas.
 Never use `CREATE OR REPLACE` on populated warehouse tables as a setup shortcut.
 
 SQL currently hardcodes `RETAIL_DWH` in several layers. Changing only an Airflow
@@ -120,7 +131,7 @@ connection or JSON database name does not retarget the entire pipeline.
 ### Runtime role and authentication
 
 For a lab, an authorized existing login can use `SYSADMIN`. For shared/business
-use, create a dedicated runtime role after all six scripts. The following is
+use, create a dedicated runtime role after all eight scripts. The following is
 an administrator-run example for this dedicated database; replace
 `YOUR_EXISTING_SNOWFLAKE_USER` with the actual Snowflake login identifier:
 
@@ -135,10 +146,13 @@ GRANT USAGE ON SCHEMA RETAIL_DWH.TMP TO ROLE RETAIL_ETL_ROLE;
 GRANT USAGE ON SCHEMA RETAIL_DWH.DQ TO ROLE RETAIL_ETL_ROLE;
 GRANT USAGE ON SCHEMA RETAIL_DWH.TGT TO ROLE RETAIL_ETL_ROLE;
 GRANT USAGE ON SCHEMA RETAIL_DWH.CONTROL TO ROLE RETAIL_ETL_ROLE;
+GRANT USAGE ON SCHEMA RETAIL_DWH.MART_SALES TO ROLE RETAIL_ETL_ROLE;
 GRANT CREATE TABLE ON SCHEMA RETAIL_DWH.STG TO ROLE RETAIL_ETL_ROLE;
 GRANT CREATE TABLE ON SCHEMA RETAIL_DWH.TMP TO ROLE RETAIL_ETL_ROLE;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN DATABASE RETAIL_DWH TO ROLE RETAIL_ETL_ROLE;
 GRANT SELECT, INSERT, UPDATE, DELETE ON FUTURE TABLES IN DATABASE RETAIL_DWH TO ROLE RETAIL_ETL_ROLE;
+GRANT SELECT ON ALL VIEWS IN SCHEMA RETAIL_DWH.MART_SALES TO ROLE RETAIL_ETL_ROLE;
+GRANT SELECT ON FUTURE VIEWS IN SCHEMA RETAIL_DWH.MART_SALES TO ROLE RETAIL_ETL_ROLE;
 GRANT READ ON STAGE RETAIL_DWH.STG.CSV_LANDING TO ROLE RETAIL_ETL_ROLE;
 GRANT WRITE ON STAGE RETAIL_DWH.STG.CSV_LANDING TO ROLE RETAIL_ETL_ROLE;
 ```
@@ -279,14 +293,15 @@ explicitly requests `SYSADMIN`; it is **not** a reliable runtime-role check for
 a restricted service login unless adapted. `test_snowflake_stage` performs a
 real PUT under `_connection_test/`. Neither is required by the main pipeline.
 Do **not** use `etl_check_file_connection` as the fresh-install gate: it is an
-old 17-file fixture diagnostic and deliberately fails on the current 33-file set.
+old 17-file fixture diagnostic and deliberately fails on the expanded dataset.
 
 ## 8. Run the complete pipeline
 
 ### Input contract
 
-The supplied fixture has **33 CSVs for November 9–18, 2026**: ten each for
-item/sales/inventory and store snapshots on November 9, 11 and 15. Inputs live
+The source folder has **2,328 CSVs from November 9, 2024 through November 18,
+2026**. This includes the original 33-file November 9–18, 2026 regression subset
+(ten each for item/sales/inventory and store snapshots on Nov 9, 11 and 15). Inputs live
 directly under `data/` and match:
 
 ```text
@@ -322,7 +337,9 @@ run_stg → run_tmp → run_gold → reconcile_gold
 
 `file_limit=0` selects all recognized files. The run loads the calendar and
 daily inventory itself; a fresh warehouse does **not** need a separate Gold
-bootstrap. The current 33-file bulk run has 46 runtime task instances.
+bootstrap. The complete current bulk run has **2,341 runtime task instances**;
+4096 mapped-task capacity is configured in Compose. It loads files serially
+and can take hours. The old 33-file subset would have 46 instances.
 
 **Scheduling warning:** `retail_full_etl` has a real midnight-UTC daily
 schedule and `catchup=False`. Unpausing can also create a normal current
@@ -365,7 +382,7 @@ changed historical inputs require the explicit correction path below.
 
 ## 9. Verify the result in Snowflake
 
-The last task runs all three queries; you can also execute these files
+The last task runs the following checks; you can also execute these files
 unchanged in Snowsight:
 
 1. [reconcile_gold.sql](include/sql/reconcile/reconcile_gold.sql): every returned
@@ -376,6 +393,11 @@ unchanged in Snowsight:
    every failure count must be **0**.
 4. [verify_reporting_corrections.sql](evidence/verify_reporting_corrections.sql):
    inspect calendar coverage, daily balances, active checksums and correction audits.
+
+When `sales_mart_enabled` is true, the task additionally executes
+[check_sales_mart_integrity.sql](include/sql/reconcile/check_sales_mart_integrity.sql).
+Use [verify_sales_mart.sql](evidence/verify_sales_mart.sql) after the full reload
+to inspect the four-view star, classifications, ISO mapping and quarter totals.
 
 ```sql
 SELECT SOURCE_FILE_NAME, ROW_COUNT, LOAD_STATUS

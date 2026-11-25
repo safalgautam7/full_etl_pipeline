@@ -29,24 +29,27 @@ class ScdEvidenceTests(unittest.TestCase):
             SNAPSHOT_DATE DATE, ITEM_ID VARCHAR, ITEM_NAME VARCHAR,
             SUBCLASS_ID VARCHAR, SUBCLASS_NAME VARCHAR, BRAND VARCHAR,
             UNIT_OF_MEASURE VARCHAR, LIST_PRICE DECIMAL(18,2), IS_ACTIVE BOOLEAN,
+            DEPARTMENT_ID VARCHAR, DEPARTMENT_NAME VARCHAR, CLASS_ID VARCHAR, CLASS_NAME VARCHAR,
             SOURCE_FILE_NAME VARCHAR, SOURCE_ROW_NUMBER INTEGER, SOURCE_ROW_ID VARCHAR)""")
         self.conn.execute("""CREATE TABLE RETAIL_DWH.TMP.STORE_MASTER (
             SNAPSHOT_DATE DATE, STORE_ID VARCHAR, STORE_NAME VARCHAR,
             DISTRICT_ID VARCHAR, DISTRICT_NAME VARCHAR, CITY VARCHAR, REGION VARCHAR,
             IS_ACTIVE BOOLEAN, SOURCE_FILE_NAME VARCHAR, SOURCE_ROW_NUMBER INTEGER,
-            SOURCE_ROW_ID VARCHAR)""")
+            SOURCE_ROW_ID VARCHAR, LOCATION_TYPE VARCHAR)""")
         fields = {
-            "item_master": "snapshot_date item_id item_name subclass_id subclass_name brand unit_of_measure list_price is_active".split(),
+            "item_master": "snapshot_date item_id item_name subclass_id subclass_name brand unit_of_measure list_price is_active department_id department_name class_id class_name".split(),
             "store_master": "snapshot_date store_id store_name district_id district_name city region is_active".split(),
         }
         for source, columns in fields.items():
             for path in sorted((ROOT / "data").glob(f"{source}_*.csv")):
-                if path.stem[-8:] > "20261113":
+                if not "20261109" <= path.stem[-8:] <= "20261113":
                     continue  # This regression's oracle covers the original fixture.
                 with path.open(newline="", encoding="utf-8-sig") as stream:
                     for number, row in enumerate(csv.DictReader(stream), 1):
                         values = [row[key] if key != "is_active" else row[key] == "Y" for key in columns]
                         values += [path.name, number, f"{path.name}:{number}"]
+                        if source == "store_master":
+                            values += [row["location_type"]]
                         self.conn.execute(
                             f"INSERT INTO RETAIL_DWH.TMP.{source.upper()} VALUES ({','.join('?' for _ in values)})",
                             values,

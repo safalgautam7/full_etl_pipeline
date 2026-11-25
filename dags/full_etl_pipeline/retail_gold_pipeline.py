@@ -217,6 +217,11 @@ def retail_gold_pipeline():
                 reporting = cur.fetchall()
                 if not reporting or any(int(n or 0) for _, n in reporting):
                     raise RuntimeError(f"Reporting integrity checks failed: {reporting}")
+                if cfg.get("sales_mart_enabled", False):
+                    execute_file(cur, cfg["reconcile_sql_dir"], "check_sales_mart_integrity.sql")
+                    mart = cur.fetchall()
+                    if not mart or any(int(n or 0) for _, n in mart):
+                        raise RuntimeError(f"Sales mart integrity checks failed: {mart}")
                 print("GOLD RECONCILIATION PASSED")
 
     calendar = load_dim_date()

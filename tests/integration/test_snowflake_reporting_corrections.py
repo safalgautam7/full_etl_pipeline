@@ -101,7 +101,7 @@ class SnowflakeReportingCorrectionTests(unittest.TestCase):
 
         originals = {}
         for path in sorted((ROOT / "data").glob("*.csv")):
-            if path.stem[-8:] > "20261113":
+            if not "20261109" <= path.stem[-8:] <= "20261113":
                 continue
             source = path.name.rsplit("_", 1)[0]
             with path.open(newline="", encoding="utf-8-sig") as stream:

@@ -1,0 +1,13 @@
+{
+  "purpose": "SYNTHETIC DEMONSTRATION CLASSIFICATIONS; not authoritative business mappings",
+  "version": "sales-reporting-v1",
+  "subclasses": {
+    "SC01": {"department_id": "DEP01", "department_name": "Food & Grocery", "class_id": "CLS01", "class_name": "Bakery & Breakfast"},
+    "SC02": {"department_id": "DEP01", "department_name": "Food & Grocery", "class_id": "CLS02", "class_name": "Dairy & Chilled"},
+    "SC03": {"department_id": "DEP03", "department_name": "Household", "class_id": "CLS03", "class_name": "Cleaning & Household"},
+    "SC04": {"department_id": "DEP02", "department_name": "Beverages", "class_id": "CLS04", "class_name": "Non-alcoholic Beverages"},
+    "SC05": {"department_id": "DEP01", "department_name": "Food & Grocery", "class_id": "CLS05", "class_name": "Pantry Staples"},
+    "SC06": {"department_id": "DEP04", "department_name": "Personal Care", "class_id": "CLS06", "class_name": "Personal Care Products"}
+  },
+  "location_types": ["Supermarket", "Convenience", "Outlet"]
+}

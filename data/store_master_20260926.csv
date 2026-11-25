@@ -1,32 +1,32 @@
-snapshot_date,store_id,store_name,district_id,district_name,city,region,is_active
-2026-09-26,STORE001,Neighborhood Mart 01,DIST01,Central District,Central City,REGION_A,Y
-2026-09-26,STORE002,Neighborhood Mart 02,DIST02,North District,Northville,REGION_A,Y
-2026-09-26,STORE003,Neighborhood Mart 03,DIST03,East District,Eastford,REGION_A,Y
-2026-09-26,STORE004,Neighborhood Mart 04,DIST04,Western District,Westhaven,REGION_A,Y
-2026-09-26,STORE005,Neighborhood Mart 05,DIST05,South District,Southport,REGION_A,Y
-2026-09-26,STORE006,Neighborhood Mart 06,DIST06,Lakeside District,Lakeview,REGION_A,Y
-2026-09-26,STORE007,Neighborhood Mart 07,DIST01,Central District,Central City,REGION_A,Y
-2026-09-26,STORE008,Neighborhood Mart 08,DIST02,North District,Northville,REGION_A,Y
-2026-09-26,STORE009,Neighborhood Mart 09,DIST03,East District,Eastford,REGION_A,Y
-2026-09-26,STORE010,Neighborhood Mart 10,DIST04,Western District,Westhaven,REGION_A,Y
-2026-09-26,STORE011,Neighborhood Mart 11,DIST05,South District,Southport,REGION_A,Y
-2026-09-26,STORE012,Neighborhood Mart 12,DIST06,Lakeside District,Lakeview,REGION_A,Y
-2026-09-26,STORE013,Neighborhood Mart 13,DIST01,Central District,Central City,REGION_A,Y
-2026-09-26,STORE014,Neighborhood Mart 14,DIST02,North District,Northville,REGION_A,Y
-2026-09-26,STORE015,Neighborhood Mart 15,DIST03,East District,Eastford,REGION_A,Y
-2026-09-26,STORE016,Neighborhood Mart 16,DIST04,Western District,Westhaven,REGION_B,Y
-2026-09-26,STORE017,Neighborhood Mart 17,DIST05,South District,Southport,REGION_B,Y
-2026-09-26,STORE018,Neighborhood Mart 18,DIST06,Lakeside District,Lakeview,REGION_B,Y
-2026-09-26,STORE019,Neighborhood Mart 19,DIST01,Central District,Central City,REGION_B,Y
-2026-09-26,STORE020,Neighborhood Mart 20,DIST02,North District,Northville,REGION_B,Y
-2026-09-26,STORE021,Neighborhood Mart 21,DIST03,East District,Eastford,REGION_B,Y
-2026-09-26,STORE022,Neighborhood Mart 22,DIST04,Western District,Westhaven,REGION_B,Y
-2026-09-26,STORE023,Neighborhood Mart 23,DIST05,South District,Southport,REGION_B,Y
-2026-09-26,STORE024,Neighborhood Mart 24,DIST06,Lakeside District,Lakeview,REGION_B,Y
-2026-09-26,STORE025,Neighborhood Mart 25,DIST01,Central District,Central City,REGION_B,Y
-2026-09-26,STORE026,Neighborhood Mart 26,DIST02,North District,Northville,REGION_B,Y
-2026-09-26,STORE027,Neighborhood Mart 27,DIST03,East District,Eastford,REGION_B,Y
-2026-09-26,STORE028,Neighborhood Mart 28,DIST04,Western District,Westhaven,REGION_B,Y
-2026-09-26,STORE029,Neighborhood Mart 29,DIST05,South District,Southport,REGION_B,Y
-2026-09-26,STORE030,Neighborhood Mart 30,DIST06,Lakeside District,Lakeview,REGION_B,Y
-2026-09-26,BADSTORE20260926,Neighborhood Mart 01,DIST01,Central District,Central City,REGION_A,?
+snapshot_date,store_id,store_name,district_id,district_name,city,region,is_active,location_type
+2026-09-26,STORE001,Neighborhood Mart 01,DIST01,Central District,Central City,REGION_A,Y,Supermarket
+2026-09-26,STORE002,Neighborhood Mart 02,DIST02,North District,Northville,REGION_A,Y,Convenience
+2026-09-26,STORE003,Neighborhood Mart 03,DIST03,East District,Eastford,REGION_A,Y,Outlet
+2026-09-26,STORE004,Neighborhood Mart 04,DIST04,Western District,Westhaven,REGION_A,Y,Supermarket
+2026-09-26,STORE005,Neighborhood Mart 05,DIST05,South District,Southport,REGION_A,Y,Convenience
+2026-09-26,STORE006,Neighborhood Mart 06,DIST06,Lakeside District,Lakeview,REGION_A,Y,Outlet
+2026-09-26,STORE007,Neighborhood Mart 07,DIST01,Central District,Central City,REGION_A,Y,Supermarket
+2026-09-26,STORE008,Neighborhood Mart 08,DIST02,North District,Northville,REGION_A,Y,Convenience
+2026-09-26,STORE009,Neighborhood Mart 09,DIST03,East District,Eastford,REGION_A,Y,Outlet
+2026-09-26,STORE010,Neighborhood Mart 10,DIST04,Western District,Westhaven,REGION_A,Y,Supermarket
+2026-09-26,STORE011,Neighborhood Mart 11,DIST05,South District,Southport,REGION_A,Y,Convenience
+2026-09-26,STORE012,Neighborhood Mart 12,DIST06,Lakeside District,Lakeview,REGION_A,Y,Outlet
+2026-09-26,STORE013,Neighborhood Mart 13,DIST01,Central District,Central City,REGION_A,Y,Supermarket
+2026-09-26,STORE014,Neighborhood Mart 14,DIST02,North District,Northville,REGION_A,Y,Convenience
+2026-09-26,STORE015,Neighborhood Mart 15,DIST03,East District,Eastford,REGION_A,Y,Outlet
+2026-09-26,STORE016,Neighborhood Mart 16,DIST04,Western District,Westhaven,REGION_B,Y,Supermarket
+2026-09-26,STORE017,Neighborhood Mart 17,DIST05,South District,Southport,REGION_B,Y,Convenience
+2026-09-26,STORE018,Neighborhood Mart 18,DIST06,Lakeside District,Lakeview,REGION_B,Y,Outlet
+2026-09-26,STORE019,Neighborhood Mart 19,DIST01,Central District,Central City,REGION_B,Y,Supermarket
+2026-09-26,STORE020,Neighborhood Mart 20,DIST02,North District,Northville,REGION_B,Y,Convenience
+2026-09-26,STORE021,Neighborhood Mart 21,DIST03,East District,Eastford,REGION_B,Y,Outlet
+2026-09-26,STORE022,Neighborhood Mart 22,DIST04,Western District,Westhaven,REGION_B,Y,Supermarket
+2026-09-26,STORE023,Neighborhood Mart 23,DIST05,South District,Southport,REGION_B,Y,Convenience
+2026-09-26,STORE024,Neighborhood Mart 24,DIST06,Lakeside District,Lakeview,REGION_B,Y,Outlet
+2026-09-26,STORE025,Neighborhood Mart 25,DIST01,Central District,Central City,REGION_B,Y,Supermarket
+2026-09-26,STORE026,Neighborhood Mart 26,DIST02,North District,Northville,REGION_B,Y,Convenience
+2026-09-26,STORE027,Neighborhood Mart 27,DIST03,East District,Eastford,REGION_B,Y,Outlet
+2026-09-26,STORE028,Neighborhood Mart 28,DIST04,Western District,Westhaven,REGION_B,Y,Supermarket
+2026-09-26,STORE029,Neighborhood Mart 29,DIST05,South District,Southport,REGION_B,Y,Convenience
+2026-09-26,STORE030,Neighborhood Mart 30,DIST06,Lakeside District,Lakeview,REGION_B,Y,Outlet
+2026-09-26,BADSTORE20260926,Neighborhood Mart 01,DIST01,Central District,Central City,REGION_A,?,Supermarket

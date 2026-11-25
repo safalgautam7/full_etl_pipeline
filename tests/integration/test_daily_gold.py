@@ -35,7 +35,7 @@ class DailyGoldTests(unittest.TestCase):
             UNIT_COST DECIMAL(18,2), INVENTORY_VALUE DECIMAL(18,2), SOURCE_ROW_ID VARCHAR)""")
         self.inventory = {}
         for path in (ROOT / "data").glob("inventory_snapshot_*.csv"):
-            if path.stem[-8:] > "20261113":
+            if not "20261109" <= path.stem[-8:] <= "20261113":
                 continue
             with path.open(newline="") as stream:
                 self.inventory[path.stem[-8:]] = [
@@ -50,7 +50,7 @@ class DailyGoldTests(unittest.TestCase):
         eligible_items = {r[0] for r in self.conn.execute("SELECT ITEM_ID FROM RETAIL_DWH.TMP.ALL_ITEM_MASTER").fetchall()}
         seen = set()
         for path in sorted((ROOT / "data").glob("pos_sales_*.csv")):
-            if path.stem[-8:] > "20261113":
+            if not "20261109" <= path.stem[-8:] <= "20261113":
                 continue
             accepted = []
             with path.open(newline="") as stream:

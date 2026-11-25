@@ -120,7 +120,7 @@ def repair_gold(cursor, runner):
 
 
 def correct_file(cursor, cfg, sql_root, *, filename, source, old_sha, new_sha,
-                 new_file_id, correction_id, reason, approved_by):
+                 new_file_id, correction_id, reason, approved_by, sales_mart_enabled=False):
     """REPLACEMENT_INPUT must be staged by the caller in this same session.
 
     Missing physical rows mean deletion from this source/date observation set;
@@ -220,6 +220,9 @@ def correct_file(cursor, cfg, sql_root, *, filename, source, old_sha, new_sha,
         for check in ("check_gold_integrity.sql", "check_reporting_integrity.sql"):
             runner.run("reconcile", check)
             assert_checks(cursor, check)
+        if sales_mart_enabled:
+            runner.run("reconcile", "check_sales_mart_integrity.sql")
+            assert_checks(cursor, "check_sales_mart_integrity.sql")
         cursor.execute(f"UPDATE {audit} SET STATUS='SUCCEEDED',FINISHED_AT=CURRENT_TIMESTAMP() "
                        "WHERE CORRECTION_ID=%s", (correction_id,))
         cursor.execute("COMMIT")

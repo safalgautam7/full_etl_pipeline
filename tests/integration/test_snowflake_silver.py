@@ -85,7 +85,7 @@ class SnowflakeSilverTests(unittest.TestCase):
                 SOURCE_ROW_NUMBER NUMBER(38,0), BATCH_ID VARCHAR(100), RAW_PAYLOAD VARIANT
             )""")
             for path in sorted((ROOT / "data").glob(f"{source}_*.csv")):
-                if path.stem[-8:] > "20261113":
+                if not "20261109" <= path.stem[-8:] <= "20261113":
                     continue  # Original 510-row acceptance oracle below.
                 file_hash = hashlib.sha256(path.read_bytes()).hexdigest()
                 file_id = hashlib.sha256(f"{path.name}:{file_hash}".encode()).hexdigest()

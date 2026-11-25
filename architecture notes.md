@@ -6,6 +6,12 @@ the single required Variable, pool, run commands and Power BI setup. The
 [Mermaid diagram](retail_etl_architecture.mmd) is a visual companion. Paths
 below are relative to the repository root; objects belong to `RETAIL_DWH`.
 
+The sales-dashboard extension adds Department/Class and Location Type end to
+end and exposes a separate four-view **MART_SALES star**. Its rollout, current
+2,328-file history, backups and verification are documented in
+[sales_reporting_reload.md](evidence/sales_reporting_reload.md). Existing TGT
+inventory tables remain available but are not imported into the sales-only model.
+
 ## 1. System boundary and runtime
 
 ```text
@@ -256,6 +262,7 @@ either. Closing/average stock and data completeness need explicit BI measures.
 | `reconcile_gold.sql` | Per-observed-date raw = accepted + rejected; Gold = accepted, for sales counts and money |
 | `check_gold_integrity.sql` | Historical intervals/current flags, duplicate business/SK keys, correct dated fact keys, accepted coverage and rejected-sales exclusion |
 | `check_reporting_integrity.sql` | Calendar uniqueness/keys/continuity/coverage, daily inventory uniqueness, exact accepted-observation coverage and stale-row exclusion |
+| `check_sales_mart_integrity.sql` (enabled by Gold config) | Flattened dimension keys/classifications, fact references, gross/net identity and ISO PY date mapping |
 
 Accounting must return PASS per date; every integrity failure count must be
 zero. Inventory version counts do not equal observation counts by design.

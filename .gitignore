@@ -29,6 +29,7 @@ airflow.sqlite
 
 # Local data files for ETL
 # data/
+data_backups/
 tmp/
 # *.csv
 *.tsv

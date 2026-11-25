@@ -13,11 +13,11 @@ OBJECT_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]*(\.[A-Z][A-Z0-9_]*){2}$")
 SOURCES = {
     "item_master": {
         "sql": "validate_item_master.sql",
-        "cols": "SNAPSHOT_DATE, ITEM_ID, ITEM_NAME, SUBCLASS_ID, SUBCLASS_NAME, BRAND, UNIT_OF_MEASURE, LIST_PRICE, IS_ACTIVE",
+        "cols": "SNAPSHOT_DATE, ITEM_ID, ITEM_NAME, SUBCLASS_ID, SUBCLASS_NAME, DEPARTMENT_ID, DEPARTMENT_NAME, CLASS_ID, CLASS_NAME, BRAND, UNIT_OF_MEASURE, LIST_PRICE, IS_ACTIVE",
     },
     "store_master": {
         "sql": "validate_store_master.sql",
-        "cols": "SNAPSHOT_DATE, STORE_ID, STORE_NAME, DISTRICT_ID, DISTRICT_NAME, CITY, REGION, IS_ACTIVE",
+        "cols": "SNAPSHOT_DATE, STORE_ID, STORE_NAME, DISTRICT_ID, DISTRICT_NAME, CITY, REGION, LOCATION_TYPE, IS_ACTIVE",
     },
     "pos_sales": {
         "sql": "validate_pos_sales.sql",

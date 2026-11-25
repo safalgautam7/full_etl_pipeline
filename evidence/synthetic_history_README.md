@@ -3,7 +3,10 @@
 Generate with `python3 scripts/generate_retail_history.py` from the repository root.
 No Airflow/Snowflake connection is made. Existing CSVs are never overwritten.
 The default range is **2024-11-09 through 2026-11-08**, inclusive (730 dates).
-The original November 9–18, 2026 fixtures remain unchanged.
+Original November 9–18, 2026 business values remain unchanged. The later
+sales-reporting migration appends synthetic Department/Class/Location Type
+attributes to master files and refreshes their checksums; see
+[sales_reporting_reload.md](sales_reporting_reload.md).
 
 Optional monthly batches use `--start YYYY-MM-DD --end YYYY-MM-DD`. Use the same
 seed for every batch; the default is 20261109. Weekly store snapshots follow a
@@ -39,7 +42,9 @@ whole-warehouse totals must include those fixtures, not just this ledger.
 
 ## Loading and calendar
 
-No pipeline or calendar SQL was changed. Manual `retail_full_etl` with
+The original history-generation step did not change pipeline SQL. The later
+reporting extension propagates the new master attributes through Silver/Gold
+and creates MART_SALES views. Manual `retail_full_etl` with
 `file_limit=0` discovers all files, including older dates. Its scheduling start
 date still prevents native daily backfills before November 9, 2026.
 Before triggering, assess existing warehouse history and Airflow mapping capacity

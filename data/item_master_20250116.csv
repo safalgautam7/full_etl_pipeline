@@ -1,32 +1,32 @@
-snapshot_date,item_id,item_name,subclass_id,subclass_name,brand,unit_of_measure,list_price,is_active
-2025-01-16,ITEM001,Whole Wheat Bread 500g,SC01,Bakery,Harvest House,EA,2.80,Y
-2025-01-16,ITEM002,White Sandwich Bread 500g,SC01,Bakery,Harvest House,EA,2.50,Y
-2025-01-16,ITEM003,Butter Croissant 2pk,SC01,Bakery,Fresh Lane,EA,3.40,Y
-2025-01-16,ITEM004,Multigrain Crackers 250g,SC01,Bakery,Fresh Lane,EA,3.20,Y
-2025-01-16,ITEM005,Organic Oats 500g,SC01,Bakery,Cedar Foods,EA,4.60,Y
-2025-01-16,ITEM006,Whole Milk 1L,SC02,Dairy,Meadow Vale,EA,2.20,Y
-2025-01-16,ITEM007,Greek Yogurt 500g,SC02,Dairy,Meadow Vale,EA,4.10,Y
-2025-01-16,ITEM008,Cheddar Cheese 200g,SC02,Dairy,Blue Hill,EA,3.90,Y
-2025-01-16,ITEM009,Salted Butter 250g,SC02,Dairy,Blue Hill,EA,3.70,Y
-2025-01-16,ITEM010,Cottage Cheese 250g,SC02,Dairy,Meadow Vale,EA,3.50,Y
-2025-01-16,ITEM011,Dishwashing Liquid 500mL,SC03,Household Care,Clean Co,EA,3.10,Y
-2025-01-16,ITEM012,Laundry Powder 1kg,SC03,Household Care,Clean Co,EA,6.20,Y
-2025-01-16,ITEM013,Surface Cleaner 750mL,SC03,Household Care,Bright Home,EA,4.20,Y
-2025-01-16,ITEM014,Paper Towels 2roll,SC03,Household Care,Bright Home,EA,3.80,Y
-2025-01-16,ITEM015,Trash Bags 20pk,SC03,Household Care,Bright Home,EA,4.60,Y
-2025-01-16,ITEM016,Orange Juice 1L,SC04,Beverages,Sun Orchard,EA,3.90,Y
-2025-01-16,ITEM017,Apple Juice 1L,SC04,Beverages,Sun Orchard,EA,3.80,Y
-2025-01-16,ITEM018,Mineral Water 1L,SC04,Beverages,Clear Spring,EA,1.20,Y
-2025-01-16,ITEM019,Iced Tea 500mL,SC04,Beverages,Clear Spring,EA,2.10,Y
-2025-01-16,ITEM020,Ground Coffee 250g,SC04,Beverages,Mountain Bean,EA,7.50,Y
-2025-01-16,ITEM021,Basmati Rice 1kg,SC05,Pantry,Golden Grain,EA,5.60,Y
-2025-01-16,ITEM022,Pasta Spaghetti 500g,SC05,Pantry,Golden Grain,EA,2.40,Y
-2025-01-16,ITEM023,Canned Chickpeas 400g,SC05,Pantry,Farm Pantry,EA,1.90,Y
-2025-01-16,ITEM024,Tomato Sauce 500g,SC05,Pantry,Farm Pantry,EA,2.70,Y
-2025-01-16,ITEM025,Peanut Butter 340g,SC05,Pantry,Farm Pantry,EA,3.80,Y
-2025-01-16,ITEM026,Shampoo 400mL,SC06,Personal Care,Daily Glow,EA,5.20,Y
-2025-01-16,ITEM027,Conditioner 400mL,SC06,Personal Care,Daily Glow,EA,5.40,Y
-2025-01-16,ITEM028,Hand Soap 250mL,SC06,Personal Care,Pure Leaf,EA,2.60,Y
-2025-01-16,ITEM029,Toothpaste 120g,SC06,Personal Care,Pure Leaf,EA,2.90,Y
-2025-01-16,ITEM030,Facial Tissue 100ct,SC06,Personal Care,Pure Leaf,EA,2.30,Y
-2025-01-16,BADITEM20250116,Whole Wheat Bread 500g,SC01,Bakery,Harvest House,EA,-1.00,Y
+snapshot_date,item_id,item_name,subclass_id,subclass_name,brand,unit_of_measure,list_price,is_active,department_id,department_name,class_id,class_name
+2025-01-16,ITEM001,Whole Wheat Bread 500g,SC01,Bakery,Harvest House,EA,2.80,Y,DEP01,Food & Grocery,CLS01,Bakery & Breakfast
+2025-01-16,ITEM002,White Sandwich Bread 500g,SC01,Bakery,Harvest House,EA,2.50,Y,DEP01,Food & Grocery,CLS01,Bakery & Breakfast
+2025-01-16,ITEM003,Butter Croissant 2pk,SC01,Bakery,Fresh Lane,EA,3.40,Y,DEP01,Food & Grocery,CLS01,Bakery & Breakfast
+2025-01-16,ITEM004,Multigrain Crackers 250g,SC01,Bakery,Fresh Lane,EA,3.20,Y,DEP01,Food & Grocery,CLS01,Bakery & Breakfast
+2025-01-16,ITEM005,Organic Oats 500g,SC01,Bakery,Cedar Foods,EA,4.60,Y,DEP01,Food & Grocery,CLS01,Bakery & Breakfast
+2025-01-16,ITEM006,Whole Milk 1L,SC02,Dairy,Meadow Vale,EA,2.20,Y,DEP01,Food & Grocery,CLS02,Dairy & Chilled
+2025-01-16,ITEM007,Greek Yogurt 500g,SC02,Dairy,Meadow Vale,EA,4.10,Y,DEP01,Food & Grocery,CLS02,Dairy & Chilled
+2025-01-16,ITEM008,Cheddar Cheese 200g,SC02,Dairy,Blue Hill,EA,3.90,Y,DEP01,Food & Grocery,CLS02,Dairy & Chilled
+2025-01-16,ITEM009,Salted Butter 250g,SC02,Dairy,Blue Hill,EA,3.70,Y,DEP01,Food & Grocery,CLS02,Dairy & Chilled
+2025-01-16,ITEM010,Cottage Cheese 250g,SC02,Dairy,Meadow Vale,EA,3.50,Y,DEP01,Food & Grocery,CLS02,Dairy & Chilled
+2025-01-16,ITEM011,Dishwashing Liquid 500mL,SC03,Household Care,Clean Co,EA,3.10,Y,DEP03,Household,CLS03,Cleaning & Household
+2025-01-16,ITEM012,Laundry Powder 1kg,SC03,Household Care,Clean Co,EA,6.20,Y,DEP03,Household,CLS03,Cleaning & Household
+2025-01-16,ITEM013,Surface Cleaner 750mL,SC03,Household Care,Bright Home,EA,4.20,Y,DEP03,Household,CLS03,Cleaning & Household
+2025-01-16,ITEM014,Paper Towels 2roll,SC03,Household Care,Bright Home,EA,3.80,Y,DEP03,Household,CLS03,Cleaning & Household
+2025-01-16,ITEM015,Trash Bags 20pk,SC03,Household Care,Bright Home,EA,4.60,Y,DEP03,Household,CLS03,Cleaning & Household
+2025-01-16,ITEM016,Orange Juice 1L,SC04,Beverages,Sun Orchard,EA,3.90,Y,DEP02,Beverages,CLS04,Non-alcoholic Beverages
+2025-01-16,ITEM017,Apple Juice 1L,SC04,Beverages,Sun Orchard,EA,3.80,Y,DEP02,Beverages,CLS04,Non-alcoholic Beverages
+2025-01-16,ITEM018,Mineral Water 1L,SC04,Beverages,Clear Spring,EA,1.20,Y,DEP02,Beverages,CLS04,Non-alcoholic Beverages
+2025-01-16,ITEM019,Iced Tea 500mL,SC04,Beverages,Clear Spring,EA,2.10,Y,DEP02,Beverages,CLS04,Non-alcoholic Beverages
+2025-01-16,ITEM020,Ground Coffee 250g,SC04,Beverages,Mountain Bean,EA,7.50,Y,DEP02,Beverages,CLS04,Non-alcoholic Beverages
+2025-01-16,ITEM021,Basmati Rice 1kg,SC05,Pantry,Golden Grain,EA,5.60,Y,DEP01,Food & Grocery,CLS05,Pantry Staples
+2025-01-16,ITEM022,Pasta Spaghetti 500g,SC05,Pantry,Golden Grain,EA,2.40,Y,DEP01,Food & Grocery,CLS05,Pantry Staples
+2025-01-16,ITEM023,Canned Chickpeas 400g,SC05,Pantry,Farm Pantry,EA,1.90,Y,DEP01,Food & Grocery,CLS05,Pantry Staples
+2025-01-16,ITEM024,Tomato Sauce 500g,SC05,Pantry,Farm Pantry,EA,2.70,Y,DEP01,Food & Grocery,CLS05,Pantry Staples
+2025-01-16,ITEM025,Peanut Butter 340g,SC05,Pantry,Farm Pantry,EA,3.80,Y,DEP01,Food & Grocery,CLS05,Pantry Staples
+2025-01-16,ITEM026,Shampoo 400mL,SC06,Personal Care,Daily Glow,EA,5.20,Y,DEP04,Personal Care,CLS06,Personal Care Products
+2025-01-16,ITEM027,Conditioner 400mL,SC06,Personal Care,Daily Glow,EA,5.40,Y,DEP04,Personal Care,CLS06,Personal Care Products
+2025-01-16,ITEM028,Hand Soap 250mL,SC06,Personal Care,Pure Leaf,EA,2.60,Y,DEP04,Personal Care,CLS06,Personal Care Products
+2025-01-16,ITEM029,Toothpaste 120g,SC06,Personal Care,Pure Leaf,EA,2.90,Y,DEP04,Personal Care,CLS06,Personal Care Products
+2025-01-16,ITEM030,Facial Tissue 100ct,SC06,Personal Care,Pure Leaf,EA,2.30,Y,DEP04,Personal Care,CLS06,Personal Care Products
+2025-01-16,BADITEM20250116,Whole Wheat Bread 500g,SC01,Bakery,Harvest House,EA,-1.00,Y,DEP01,Food & Grocery,CLS01,Bakery & Breakfast

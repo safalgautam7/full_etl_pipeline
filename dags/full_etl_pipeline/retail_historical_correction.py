@@ -86,6 +86,7 @@ def retail_historical_correction():
                     cur, cfg, "/opt/airflow/include/sql", filename=filename, source=source,
                     old_sha=expected, new_sha=digest, new_file_id=file_id,
                     correction_id=correction_id, reason=reason, approved_by=approver,
+                    sales_mart_enabled=gold.get("sales_mart_enabled", False),
                 )
 
     replace_file()
